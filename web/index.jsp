@@ -1,17 +1,16 @@
-<%-- 
-    Document   : index
-    Created on : May 4, 2023, 9:03:53 PM
-    Author     : jemne
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@include file="navigation_bar.jsp" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
+    
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/nav-bar.css" />
+        <link rel="stylesheet" href="css/index.css" />
+        <title>Index</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+
     </body>
 </html>
