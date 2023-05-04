@@ -1,0 +1,62 @@
+.main-container{
+    background-color: #fff;
+    width: 90%;
+    margin: 2.5%;
+    padding: 5rem 2.5rem;
+    border-radius: 1rem;
+}
+
+.text-content{
+    margin-top: 10%;
+}
+
+h1{
+    text-align: center;
+    font-size: 50px;
+}
+
+p{
+    text-align: center;
+    font-size: 30px;
+}
+
+a, a:visited{
+    color: rgb(87, 124, 160);
+}
+
+/*Made by @mrhyddenn from uiverse.io*/
+.loader {
+    position: relative;
+}
+
+.loader span {
+    position: absolute;
+    color: #fff;
+    transform: translate(-50%, -50%);
+    font-size: 100px;
+    letter-spacing: 5px;
+    margin: 3% 50%;
+}
+
+.loader span:nth-child(1) {
+    color: transparent;
+    -webkit-text-stroke: 0.3px #000;
+}
+
+.loader span:nth-child(2) {
+    color: rgb(87, 124, 160);
+    -webkit-text-stroke: 1px rgb(87, 124, 160);
+    animation: flowing 3s ease-in-out infinite;
+}
+
+@keyframes flowing {
+    0%, 100% {
+        clip-path: polygon(0% 45%, 15% 44%, 32% 50%,
+            54% 60%, 70% 61%, 84% 59%, 100% 52%, 100% 100%, 0% 100%);
+    }
+
+    50% {
+        clip-path: polygon(0% 60%, 16% 65%, 34% 66%,
+            51% 62%, 67% 50%, 84% 45%, 100% 46%, 100% 100%, 0% 100%);
+    }
+}

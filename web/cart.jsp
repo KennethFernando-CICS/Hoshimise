@@ -5,7 +5,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="icon" type="image/x-icon" href="images/icon.png"/>
-        <title>Index</title>
+        <title>Cart</title>
     </head>
     <body>
         
