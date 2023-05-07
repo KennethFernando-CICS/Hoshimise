@@ -37,13 +37,14 @@ public class loginServlet extends HttpServlet {
         System.out.println("userPass");
         try{
             Statement stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT EMAIL, PASSWORD FROM USERINFO");
+            rs = stmt.executeQuery("SELECT USERNAME, EMAIL, PASSWORD FROM USERS");
             
             while(rs.next()){
                 String emailDB = rs.getString("EMAIL").trim();
-                session.setAttribute("email", emailDB);
-                if(userEmail.equals(emailDB) && userPass.equals(rs.getString("PASSWORD").trim()))
+                if(userEmail.equals(emailDB) && userPass.equals(rs.getString("PASSWORD").trim())){
+                    session.setAttribute("username", rs.getString("USERNAME")); //para idisplay sa nav bar natin pagka login
                     temp = true; //change this
+                }
             }
             
             if(temp){ //change this
