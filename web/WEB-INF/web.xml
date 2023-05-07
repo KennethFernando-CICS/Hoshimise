@@ -22,7 +22,7 @@
     </context-param>
     <context-param>
         <param-name>jdbcDriverURL</param-name>
-        <param-value>jdbc:derby://localhost:1527/FapLoginDB</param-value>
+        <param-value>jdbc:derby://localhost:1527/FapDB</param-value>
     </context-param>
     <servlet>
         <servlet-name>loginServlet</servlet-name>
