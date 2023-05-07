@@ -40,13 +40,17 @@
         <servlet-name>SimpleCaptchaServlet</servlet-name>
         <url-pattern>/SimpleCaptchaServlet</url-pattern>
     </servlet-mapping>
+    <listener>
+        <description>ServletContextListener</description>
+        <listener-class>controller.HoshimiseListener</listener-class>
+    </listener>
     <servlet>
-        <servlet-name>servletDummy</servlet-name>
-        <servlet-class>controller.servletDummy</servlet-class>
+        <servlet-name>ProductLoadServlet</servlet-name>
+        <servlet-class>controller.ProductLoadServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>servletDummy</servlet-name>
-        <url-pattern>/servletDummy</url-pattern>
+        <servlet-name>ProductLoadServlet</servlet-name>
+        <url-pattern>/ProductLoad</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
