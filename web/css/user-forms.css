@@ -19,6 +19,12 @@ fieldset{
     padding: 1rem;
 }
 
+.prompt{
+    text-align: center;
+    color: red;
+    font-size: 1rem;
+}
+
 .login-container{
     display: grid;
     max-width: 50%;

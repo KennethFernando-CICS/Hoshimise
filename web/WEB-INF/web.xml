@@ -1,5 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    <context-param>
+        <param-name>key</param-name>
+        <param-value>KENNETHJACOBEDGE</param-value>
+    </context-param>
+    <context-param>
+        <param-name>cipher</param-name>
+        <param-value>AES/ECB/PKCS5Padding</param-value>
+    </context-param>
+    <context-param>
+        <param-name>jdbcClassName</param-name>
+        <param-value>org.apache.derby.jdbc.ClientDriver</param-value>
+    </context-param>
+    <context-param>
+        <param-name>dbUserName</param-name>
+        <param-value>app</param-value>
+    </context-param>
+    <context-param>
+        <param-name>dbPassword</param-name>
+        <param-value>app</param-value>
+    </context-param>
+    <context-param>
+        <param-name>jdbcDriverURL</param-name>
+        <param-value>jdbc:derby://localhost:1527/FapLoginDB</param-value>
+    </context-param>
+    <servlet>
+        <servlet-name>loginServlet</servlet-name>
+        <servlet-class>controller.loginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>loginServlet</servlet-name>
+        <url-pattern>/loginServlet</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>SimpleCaptchaServlet</servlet-name>
+        <servlet-class>controller.SimpleCaptchaServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SimpleCaptchaServlet</servlet-name>
+        <url-pattern>/SimpleCaptchaServlet</url-pattern>
+    </servlet-mapping>
     <servlet>
         <servlet-name>servletDummy</servlet-name>
         <servlet-class>controller.servletDummy</servlet-class>

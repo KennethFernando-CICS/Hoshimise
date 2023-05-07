@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,11 +21,21 @@
 
         <div class="login-container">
             <h1>LOGIN</h1>
+            <!-- Pakiayos nalang kung may mas maayos kang implementation -->
+            <%try{
+                boolean succ = request.getAttribute("succ").equals("true");
+            } catch(NullPointerException npe){
+                request.setAttribute("succ", false);
+                request.getRequestDispatcher("login.jsp").forward(request, response); //forward request to addRecord.jsp
+            }%>
+            <c:if test="${succ}">
+                <p class="prompt">Wrong username or password!</p>
+            </c:if>
             <div class="form-container">
-                <form action="login" method="POST">
+                <form action="loginServlet" method="POST">
                     <fieldset>
-                        <label for="username">Username:</label><br>
-                        <input placeholder="Username" class="input" name="username" type="text" required /><br>
+                        <label for="email">Email: </label><br>
+                        <input placeholder="Email" class="input" name="email" type="text" required /><br>
                         <label for="password">Password:</label><br>
                         <input placeholder="Password" class="input" name="password" type="password" required /><br>
                         <button class="login"> Login </button>
