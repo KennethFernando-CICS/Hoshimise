@@ -80,7 +80,7 @@ public class ProductLoadServlet extends HttpServlet {
                         + "<div class=\"temp-image\">"
                         + "<img class=\"item-img\" src=\"resources/images/" + rs.getString("IMAGE") + "\"/>"
                         + "</div>"
-                        + "<h1 class=\"item-name\">" + rs.getString("Name") + "</h1>\n"
+                        + "<h1 class=\"item-name truncate\">" + rs.getString("Name") + "</h1>\n"
                         + "<p class=\"price\">$" + rs.getDouble("Price") + "</p>\n"
                         + "</div>"
                 );  
