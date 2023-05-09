@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +31,7 @@ public class ProductLoadServlet extends HttpServlet {
             PrintWriter out = response.getWriter();
             int count = Integer.parseInt(request.getParameter("count"));
             
-            Connection conn = connectDB();
+            Connection conn = connectDB(getServletContext());
 
             String query = "SELECT * FROM PRODUCTS FETCH FIRST ? ROWS ONLY";
             PreparedStatement ps = conn.prepareStatement(query);
@@ -59,17 +60,17 @@ public class ProductLoadServlet extends HttpServlet {
         }
     }
 
-    public static Connection connectDB()
+    public Connection connectDB(ServletContext sc)
     {
-        Connection conn = null;
+        Connection conn = null;       
         try {
-            String driver = "org.apache.derby.jdbc.ClientDriver";
+            String driver = sc.getInitParameter("jdbcClassName");
             Class.forName(driver);
             System.out.println("LOADED DRIVER: " + driver);
             
-            String url = "jdbc:derby://localhost:1527/FapDB";
-            String username = "app";
-            String password = "app";
+            String url = sc.getInitParameter("jdbcDriverURL");
+            String username = sc.getInitParameter("dbUserName");
+            String password = sc.getInitParameter("dbPassword");
             conn = DriverManager.getConnection(url, username, password);
         }
         catch (Exception e){

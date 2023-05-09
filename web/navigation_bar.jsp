@@ -1,3 +1,5 @@
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -22,10 +24,14 @@
                         <li><a href="cart.jsp">Cart</a></li>    
                         <li><a href="">Categories</a>
                             <div class="sub-menu">
-                                <ul class="dropdown">
-                                    <li><a href="">Product A</a></li>
+                                <ul class="dropdown">                                   
+<!--                                    <li><a href="">Product A</a></li>
                                     <li><a href="">Product B</a></li>
-                                    <li><a href="">Product C</a></li>
+                                    <li><a href="">Product C</a></li>-->
+                                    
+                                    <c:forEach var="cat" items="${categories}">
+                                        <li><a href="ProductLoad?${cat}">${cat}</a></li>
+                                    </c:forEach>
                                 </ul>
                            </div>
                         </li>
