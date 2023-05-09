@@ -67,9 +67,10 @@ public class ProductLoadServlet extends HttpServlet {
     
     public void HomePage(PrintWriter out,int count){
         try {
-            String query = "SELECT * FROM PRODUCTS FETCH FIRST ? ROWS ONLY";
+            String query = "SELECT * FROM PRODUCTS";
+            //String query = "SELECT * FROM PRODUCTS FETCH FIRST ? ROWS ONLY";
             ps = conn.prepareStatement(query);
-            ps.setInt(1, count);
+            //ps.setInt(1, count);
             rs = ps.executeQuery();
             
             while (rs.next()) {
