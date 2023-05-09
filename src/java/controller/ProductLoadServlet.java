@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,15 +28,17 @@ public class ProductLoadServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try{
             PrintWriter out = response.getWriter();
+            int count = Integer.parseInt(request.getParameter("count"));
             
             Connection conn = connectDB();
 
-            String query = "SELECT * FROM PRODUCTS FETCH FIRST 10 ROWS ONLY";
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
+            String query = "SELECT * FROM PRODUCTS FETCH FIRST ? ROWS ONLY";
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setInt(1, count);
+            ResultSet rs = ps.executeQuery();
             
             while(rs.next()){
-                System.out.println("Loaded Product ID:" + rs.getInt("PROD_ID"));
+                System.out.println("[ProductLoad]Loaded Product ID:" + rs.getInt("PROD_ID"));
                 out.println("<div class=\"item-container\">\n" +
                             "<div class=\"temp-image\">" +
                             "<img class=\"item-img\" src=\"resources/images/" + rs.getString("IMAGE") + "\"/>" +
@@ -49,7 +51,7 @@ public class ProductLoadServlet extends HttpServlet {
             
             //Close
             rs.close();
-            stmt.close();
+            ps.close();
             conn.close();
           
         } catch (SQLException ex) {
