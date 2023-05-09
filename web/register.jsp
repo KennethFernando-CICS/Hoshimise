@@ -22,7 +22,7 @@
             <div class="form-container">
                 <!-- setup links for privacy agreement and user agreement -->
                 <p>By filling out this form you agree to the <a href="">Privacy Agreement</a> and <a href="">User Agreement</a></p>           
-                <form action="register" method="POST">
+                <form action="Register" method="POST">
                     <fieldset>
                         <label for="username">Username: <input placeholder="Username" class="input" name="username" type="text" required /></label>
                         <label for="email">Email Address: <input placeholder="Email" class="input" name="email" type="text" required /></label>

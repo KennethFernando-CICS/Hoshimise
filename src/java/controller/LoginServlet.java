@@ -4,9 +4,8 @@ import java.io.*;
 import java.sql.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import nl.captcha.Captcha;
 
-public class loginServlet extends HttpServlet {
+public class LoginServlet extends HttpServlet {
 
     public static Connection con;
     public static ResultSet rs;
