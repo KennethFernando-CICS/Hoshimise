@@ -30,7 +30,7 @@
                                     <li><a href="">Product C</a></li>-->
                                     
                                     <c:forEach var="cat" items="${categories}">
-                                        <li><a href="ProductLoad?sortBy=${cat}">${cat}</a></li>
+                                        <li><a href="index.jsp?sortBy=${cat}">${cat}</a></li>
                                     </c:forEach>
                                 </ul>
                            </div>

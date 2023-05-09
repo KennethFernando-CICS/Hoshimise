@@ -16,7 +16,7 @@ public class HoshimiseListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         System.out.println(logPrefix + "Hoshimise Web Application Initialized. "); 
-        String[] categories = {"T-Shirt","Hoodies"};
+        String[] categories = {"T-Shirt","Hoodie"};
         List<String> categoryList = Arrays.asList(categories);
         
         ServletContext sc = sce.getServletContext();

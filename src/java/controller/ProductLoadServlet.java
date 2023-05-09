@@ -14,7 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class ProductLoadServlet extends HttpServlet {
-
+    Connection conn = null;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -26,37 +28,20 @@ public class ProductLoadServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("text/html;charset=UTF-8");      
         try{
             PrintWriter out = response.getWriter();
-            int count = Integer.parseInt(request.getParameter("count"));
+            int count = Integer.parseInt((String)request.getParameter("count"));
             
-            Connection conn = connectDB(getServletContext());
-
-            String query = "SELECT * FROM PRODUCTS FETCH FIRST ? ROWS ONLY";
-            PreparedStatement ps = conn.prepareStatement(query);
-            ps.setInt(1, count);
-            ResultSet rs = ps.executeQuery();
-            
-            while(rs.next()){
-                System.out.println("[ProductLoad]Loaded Product ID:" + rs.getInt("PROD_ID"));
-                out.println("<div class=\"item-container\">\n" +
-                            "<div class=\"temp-image\">" +
-                            "<img class=\"item-img\" src=\"resources/images/" + rs.getString("IMAGE") + "\"/>" +
-                            "</div>" +
-                            "<h1 class=\"item-name\">" + rs.getString("Name") + "</h1>\n" +
-                            "<p class=\"price\">$" + rs.getDouble("Price") + "</p>\n" +
-                            "</div>"
-                );
-            }            
-            
-            //Close
-            rs.close();
-            ps.close();
-            conn.close();
-          
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+            conn = connectDB(getServletContext());
+            if(request.getParameter("sortBy") == null)
+                HomePage(out, count);
+            else{
+                String sortBy = request.getParameter("sortBy");
+                showCategory(out,count,sortBy);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -80,6 +65,62 @@ public class ProductLoadServlet extends HttpServlet {
         return conn;
     }
     
+    public void HomePage(PrintWriter out,int count){
+        try {
+            String query = "SELECT * FROM PRODUCTS FETCH FIRST ? ROWS ONLY";
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, count);
+            rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                System.out.println("[ProductLoad]Loaded Product ID:" + rs.getInt("PROD_ID"));
+                out.println("<div class=\"item-container\">\n"
+                        + "<div class=\"temp-image\">"
+                        + "<img class=\"item-img\" src=\"resources/images/" + rs.getString("IMAGE") + "\"/>"
+                        + "</div>"
+                        + "<h1 class=\"item-name\">" + rs.getString("Name") + "</h1>\n"
+                        + "<p class=\"price\">$" + rs.getDouble("Price") + "</p>\n"
+                        + "</div>"
+                );  
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally{
+            try{
+                //Close
+                rs.close();
+                ps.close();
+                conn.close();
+                System.out.println("[ProductLoad]SQL Objects Closed.");
+            } catch(SQLException e){
+                System.out.println("[ProductLoad]SQL Objects Failed to Close.");
+            }
+        }
+    }
+    
+    public void showCategory(PrintWriter out,int count,String category){
+        try {
+            category = '%' + category + '%';
+            String query = "SELECT * FROM PRODUCTS WHERE UPPER(NAME) LIKE UPPER(?)";
+            ps = conn.prepareStatement(query);
+            ps.setString(1, category);
+            rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                System.out.println("[ProductLoad]Loaded Product ID:" + rs.getInt("PROD_ID"));
+                out.println("<div class=\"item-container\">\n"
+                        + "<div class=\"temp-image\">"
+                        + "<img class=\"item-img\" src=\"resources/images/" + rs.getString("IMAGE") + "\"/>"
+                        + "</div>"
+                        + "<h1 class=\"item-name\">" + rs.getString("Name") + "</h1>\n"
+                        + "<p class=\"price\">$" + rs.getDouble("Price") + "</p>\n"
+                        + "</div>"
+                );  
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

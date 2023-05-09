@@ -19,7 +19,7 @@
             <h1 class="item-name">Sample Item Name</h1>
             <p class="price">$1.00</p>
         </div>-->
-        <jsp:include page="/ProductLoad?count=10"></jsp:include>
+        <jsp:include page="/ProductLoad?count=10&${sortBy}"></jsp:include>
         </div>
     </body>
 </html>
