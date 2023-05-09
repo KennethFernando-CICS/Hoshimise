@@ -12,7 +12,7 @@
     </head>
     <body>
         <div class="item-grid">
-            <jsp:include page="/ProductLoad"></jsp:include>
+            <jsp:include page="/ProductLoad?count=10&${sortBy}"></jsp:include>
         </div>
     </body>
 </html>
