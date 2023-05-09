@@ -12,14 +12,7 @@
     </head>
     <body>
         <div class="item-grid">
-<!--        <div class="item-container">
-            <div class="temp-image">
-                
-            </div>
-            <h1 class="item-name">Sample Item Name</h1>
-            <p class="price">$1.00</p>
-        </div>-->
-        <jsp:include page="/ProductLoad"></jsp:include>
+            <jsp:include page="/ProductLoad"></jsp:include>
         </div>
     </body>
 </html>
