@@ -22,7 +22,13 @@
                     <ul>
                         <li><a href="index.jsp">Home</a></li>
                         <li><a href="cart.jsp">Cart</a></li>    
-                        <li><a href="">Categories</a>
+                        <li>
+                            <c:if test="${sortType eq 'product'}">
+                              <a href="">Categories</a> 
+                            </c:if>
+                            <c:if test="${sortType eq 'anime'}">
+                              <a href="">Anime</a>  
+                            </c:if>                          
                             <div class="sub-menu">
                                 <ul class="dropdown">                                   
 <!--                                    <li><a href="">Product A</a></li>

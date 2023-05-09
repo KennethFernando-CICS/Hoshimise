@@ -15,12 +15,21 @@ public class HoshimiseListener implements ServletContextListener {
     private final String logPrefix = "[HoshimiseListener]";
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        System.out.println(logPrefix + "Hoshimise Web Application Initialized. "); 
-        String[] categories = {"T-Shirt","Hoodie"};
-        List<String> categoryList = Arrays.asList(categories);
-        
+        System.out.println(logPrefix + "Hoshimise Web Application Initialized. ");
         ServletContext sc = sce.getServletContext();
+        //Initializing sorting method used
+        String[] productType = {"T-Shirt","Hoodie"};
+        String[] anime = {"Demon Slayer","Attack on Titan"};
+        String sortType = "product";
+        
+        List<String> categoryList = null;
+        if(sortType.equals("product"))
+            categoryList = Arrays.asList(productType); 
+        else if(sortType.equals("anime"))
+            categoryList = Arrays.asList(anime);
+               
         sc.setAttribute("categories", categoryList);
+        sc.setAttribute("sortType", sortType);
     }
 
     @Override
