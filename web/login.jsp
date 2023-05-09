@@ -8,14 +8,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="css/nav-bar.css" />
         <link rel="stylesheet" href="css/user-forms.css" />
-        <link rel="icon" type="image/x-icon" href="images/icon.png"/>
+        <link rel="icon" type="image/x-icon" href="logo/icon.png"/>
         <title>Login</title>
     </head>
     <body>
         <header>
             <div class="container">
                 <!--setup proper link to homepage-->
-                <a href="index.jsp"><img src="images/logo.png" alt="logo" class="logo" /></a>
+                <a href="index.jsp"><img src="resources/logo/logo.png" alt="logo" class="logo" /></a>
             </div>
         </header>
 
@@ -32,7 +32,7 @@
                 <p class="prompt">Wrong username or password!</p>
             </c:if>
             <div class="form-container">
-                <form action="loginServlet" method="POST">
+                <form action="LoginServlet" method="POST">
                     <fieldset>
                         <label for="email">Email: </label><br>
                         <input placeholder="Email" class="input" name="email" type="text" required /><br>

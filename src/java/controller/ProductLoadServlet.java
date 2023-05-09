@@ -42,6 +42,7 @@ public class ProductLoadServlet extends HttpServlet {
             }
         } catch (Exception e){
             e.printStackTrace();
+
         }
     }
 
