@@ -27,7 +27,7 @@
                         <label for="username">Username: <input placeholder="Username" class="input" name="username" type="text" required /></label>
                         <label for="email">Email Address: <input placeholder="Email" class="input" name="email" type="text" required /></label>
                         <label for="password">Password: <input placeholder="Password" class="input" name="password" type="password" required /></label>
-                        <input type="checkbox" />By clicking this button, you agree to have your information stored in our database
+                        <input type="checkbox" required/>By clicking this button, you agree to have your information stored in our database
                         <br>
                         <button class="register"> Register </button>
                         <h4>Already have an account? <a href="login.jsp">Click Here!</a></h4>

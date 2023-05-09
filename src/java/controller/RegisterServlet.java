@@ -6,36 +6,42 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 public class RegisterServlet extends HttpServlet {
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Connection conn = connectDB(); //connect to the database
-//        HttpSession session = request.getSession();
-        
-        String username = request.getParameter("username"), email = request.getParameter("email"), 
+        HttpSession session = request.getSession();
+
+        String username = request.getParameter("username"), email = request.getParameter("email"),
                 password = model.Encryption.encrypt(request.getParameter("password"),
-                getServletContext().getInitParameter("key"), getServletContext().getInitParameter("cipher"));
+                        getServletContext().getInitParameter("key"), getServletContext().getInitParameter("cipher"));
         
-        try{
+        int id = 1;
+
+        try {       
             Statement s = conn.createStatement();
-            ResultSet rs = s.executeQuery("SELECT USERNAME, EMAIL, PASSWORD FROM APP.USERS");
-            
-            while(rs.next()){
-                if(username.equals(rs.getString("USERNAME"))){ //if the username is already in the database
-                    request.setAttribute("fail", "username");
+            ResultSet rs = s.executeQuery("SELECT USERNAME, EMAIL FROM APP.USERS");
+            while (rs.next()) {
+                id++;
+                if (username.equals(rs.getString("USERNAME"))) { //if the username is already in the database
+                    request.setAttribute("fail", 1);
                     request.getRequestDispatcher("register.jsp").forward(request, response);
-                } else if (email.equals(rs.getString("EMAIL"))){ //if the email is already is in the database
-                    request.setAttribute("fail", "email");
+                } else if (email.equals(rs.getString("EMAIL"))) { //if the email is already is in the database
+                    request.setAttribute("fail", 2);
                     request.getRequestDispatcher("register.jsp").forward(request, response);
-                } else{
-                    PreparedStatement ps = conn.prepareStatement("INSERT INTO APP.USERS (USER_ID, USERNAME, EMAIL, PASSWORD, CART) VALUES ('?', '?', '?', '?', '');");
-                    ps.setString(1, "2");
-                    ps.setString(2, username);
-                    ps.setString(3, email);
-                    ps.setString(4, password);
-                    response.sendRedirect("index.jsp");
                 }
             }
-        } catch (SQLException e){
+            
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO APP.USERS VALUES (?, ?, ?, ?, '')");
+            ps.setInt(1, id);
+            ps.setString(2, username);
+            ps.setString(3, email);
+            ps.setString(4, password);
+            ps.executeUpdate();
+            session.setAttribute("username", username);
+            response.sendRedirect("index.jsp");
+        } catch (SQLException e) {
             e.printStackTrace();
+            response.sendError(500);
         }
     }
 
@@ -78,23 +84,20 @@ public class RegisterServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    public static Connection connectDB()
-    {
+    public static Connection connectDB() {
         Connection conn = null;
         try {
             String driver = "org.apache.derby.jdbc.ClientDriver";
             Class.forName(driver);
             System.out.println("LOADED DRIVER: " + driver);
-            
+
             String url = "jdbc:derby://localhost:1527/FapDB";
             String username = "app";
             String password = "app";
             conn = DriverManager.getConnection(url, username, password);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
         return conn;
     }
 }
