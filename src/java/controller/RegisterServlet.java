@@ -16,6 +16,7 @@ public class RegisterServlet extends HttpServlet {
                         getServletContext().getInitParameter("key"), getServletContext().getInitParameter("cipher"));
         
         int id = 1;
+        //test
 
         try {       
             Statement s = conn.createStatement();
