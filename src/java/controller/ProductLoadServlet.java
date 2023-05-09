@@ -38,7 +38,7 @@ public class ProductLoadServlet extends HttpServlet {
             ResultSet rs = ps.executeQuery();
             
             while(rs.next()){
-                System.out.println("Loaded Product ID:" + rs.getInt("PROD_ID"));
+                System.out.println("[ProductLoad]Loaded Product ID:" + rs.getInt("PROD_ID"));
                 out.println("<div class=\"item-container\">\n" +
                             "<div class=\"temp-image\">" +
                             "<img class=\"item-img\" src=\"resources/images/" + rs.getString("IMAGE") + "\"/>" +
