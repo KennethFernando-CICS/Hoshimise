@@ -9,7 +9,7 @@ public class LoginServlet extends HttpServlet {
 
     public static Connection con;
     public static ResultSet rs;
-    protected int ctr = 0;
+    protected int ctr = 1;
     
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -33,35 +33,41 @@ public class LoginServlet extends HttpServlet {
         boolean temp = false; // change this para session yung gagamitin pang verify kung successful yung login
         String userEmail = request.getParameter("email"), userPass = model.Encryption.encrypt(request.getParameter("password"),
                 getServletContext().getInitParameter("key"), getServletContext().getInitParameter("cipher"));
-        System.out.println("userPass");
+//        System.out.println("userPass");
         try{
             Statement stmt = con.createStatement();
             rs = stmt.executeQuery("SELECT USERNAME, EMAIL, PASSWORD FROM USERS");
             
             while(rs.next()){
                 String emailDB = rs.getString("EMAIL").trim();
+                
+                System.out.println(String.format("Email: %s || Username: %s || Password: %s", emailDB, rs.getString("USERNAME"), 
+                        rs.getString("PASSWORD"))); //print the contents of the database into the console
+                
                 if(userEmail.equals(emailDB) && userPass.equals(rs.getString("PASSWORD").trim())){
                     session.setAttribute("username", rs.getString("USERNAME")); //para idisplay sa nav bar natin pagka login
-                    temp = true; //change this
+                    System.out.println("Found user in the database");
+                    temp = true; //current verification kung yung email and password is in the database
+                    break;
                 }
             }
             
-            if(temp){ //change this
+            if(temp){ //verifies if the user is in the database and redirect them to the homepage
                 ctr = 0;
                 response.sendRedirect("index.jsp");
             }
-            else if(ctr < 3){ //probably better to show a prompt that shows it is the wrong username/password
+            else if(ctr < 3){ //shows a message that the email or password is wrong (total of 3 tries)
                 ctr++;
                 request.setAttribute("succ", "true"); //NOTE: FOR VERIFICATION FOR POPUP IN THE LOGIN PAGE
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
-            else{ //redirect ko nalang to login error
+            else{ //throw an error message which will redirect the user to error 440 page
                 ctr = 0;
-                //response.sendRedirect("login_error.jsp");
                 response.sendError(440);
             }
         } catch(SQLException e){
             e.printStackTrace();
+            response.sendError(500);
         }
 //        response.sendRedirect("login_success.jsp");
     }
