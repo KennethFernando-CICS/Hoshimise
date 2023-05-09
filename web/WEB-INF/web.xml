@@ -25,12 +25,16 @@
         <param-value>jdbc:derby://localhost:1527/FapDB</param-value>
     </context-param>
     <servlet>
-        <servlet-name>loginServlet</servlet-name>
-        <servlet-class>controller.loginServlet</servlet-class>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>controller.LoginServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Register</servlet-name>
+        <servlet-class>controller.RegisterServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>loginServlet</servlet-name>
-        <url-pattern>/loginServlet</url-pattern>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/LoginServlet</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>SimpleCaptchaServlet</servlet-name>
@@ -51,6 +55,10 @@
     <servlet-mapping>
         <servlet-name>ProductLoadServlet</servlet-name>
         <url-pattern>/ProductLoad</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Register</servlet-name>
+        <url-pattern>/Register</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

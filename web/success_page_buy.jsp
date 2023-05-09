@@ -11,7 +11,7 @@
     <body>
         <header>
             <div class="container">
-                <a href="/USTORE"><img src="images/logo.png" alt="logo" class="logo" /></a>
+                <a href="/USTORE"><img src="resources/logo/logo.png" alt="logo" class="logo" /></a>
             </div>
         </header>
         <div class="content-container">            

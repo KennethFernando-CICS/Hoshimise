@@ -5,7 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="css/nav-bar.css" />
-        <link rel="icon" type="image/x-icon" href="images/icon.png"/>
+        <link rel="icon" type="image/x-icon" href="logo/icon.png"/>
     </head>
     <body>
         <%
@@ -15,7 +15,7 @@
         %>
         <header>
             <div class="container">
-                <a href="index.jsp"><img src="images/logo.png" alt="logo" class="logo" /></a>
+                <a href="index.jsp"><img src="resources/logo/logo.png" alt="logo" class="logo" /></a>
                 <nav>
                     <ul>
                         <li><a href="index.jsp">Home</a></li>
