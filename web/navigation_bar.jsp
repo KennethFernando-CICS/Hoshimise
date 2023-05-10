@@ -41,8 +41,21 @@
                                 </ul>
                            </div>
                         </li>
-                        <li><a href="register.jsp"">Register</a></li>
-                        <li><a href="login.jsp"">Login</a></li>
+                        <c:if test="${username == null}">
+                            <li><a href="register.jsp"">Register</a></li>
+                            <li><a href="login.jsp"">Login</a></li>
+                        </c:if>
+                        <c:if test="${username != null}">
+                        <li><a>${username}</a>
+                            <div class="sub-menu">
+                                <ul class="dropdown">                                   
+                                    <li><a href="">Profile</a></li>
+                                    <li><a href="">Settings</a></li>
+                                    <li><a href="">Log Out</a></li>                                    
+                                </ul>
+                           </div>
+                        </li>
+                        </c:if>
                     </ul>
                 </nav>
             </div>
