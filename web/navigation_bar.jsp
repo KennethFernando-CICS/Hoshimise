@@ -10,11 +10,6 @@
         <link rel="icon" type="image/x-icon" href="logo/icon.png"/>
     </head>
     <body>
-        <%
-            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-            response.setHeader("Progma", "no-cache");
-            response.setHeader("Expires", "0");
-        %>
         <header>
             <div class="container">
                 <a href="index.jsp"><img src="resources/logo/logo.png" alt="logo" class="logo" /></a>
@@ -31,10 +26,6 @@
                             </c:if>                          
                             <div class="sub-menu">
                                 <ul class="dropdown">                                   
-<!--                                    <li><a href="">Product A</a></li>
-                                    <li><a href="">Product B</a></li>
-                                    <li><a href="">Product C</a></li>-->
-                                    
                                     <c:forEach var="cat" items="${categories}">
                                         <li><a href="index.jsp?sortBy=${cat}">${cat}</a></li>
                                     </c:forEach>
@@ -42,8 +33,8 @@
                            </div>
                         </li>
                         <c:if test="${username == null}">
-                            <li><a href="register.jsp"">Register</a></li>
-                            <li><a href="login.jsp"">Login</a></li>
+                            <li><a href="register.jsp">Register</a></li>
+                            <li><a href="login.jsp">Login</a></li>
                         </c:if>
                         <c:if test="${username != null}">
                         <li><a>${username}</a>
@@ -51,7 +42,7 @@
                                 <ul class="dropdown">                                   
                                     <li><a href="">Profile</a></li>
                                     <li><a href="">Settings</a></li>
-                                    <li><a href="">Log Out</a></li>                                    
+                                    <li><a href="LogoutServlet">Log Out</a></li>                                    
                                 </ul>
                            </div>
                         </li>

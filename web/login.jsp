@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
-
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +10,14 @@
         <link rel="icon" type="image/x-icon" href="logo/icon.png"/>
         <title>Login</title>
     </head>
+    <%
+        /*if (session.getAttribute("username") != null) {
+            response.sendRedirect("index.jsp");
+        }
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Progma", "no-cache");
+        response.setHeader("Expires", "0");*/
+    %>
     <body>
         <header>
             <div class="container">
@@ -22,12 +29,12 @@
         <div class="login-container">
             <h1>LOGIN</h1>
             <!-- Pakiayos nalang kung may mas maayos kang implementation -->
-            <%try{
-                boolean succ = request.getAttribute("succ").equals("true");
-            } catch(NullPointerException npe){
-                request.setAttribute("succ", false);
-                request.getRequestDispatcher("login.jsp").forward(request, response); //forward request to addRecord.jsp
-            }%>
+            <%try {
+                    boolean succ = request.getAttribute("succ").equals("true");
+                } catch (NullPointerException npe) {
+                    request.setAttribute("succ", false);
+                    request.getRequestDispatcher("login.jsp").forward(request, response); //forward request to addRecord.jsp
+                }%>
             <c:if test="${succ}">
                 <p class="prompt">Wrong username or password!</p>
             </c:if>
@@ -53,9 +60,9 @@
                     <div class="bar"></div>
                 </div>
                 <div class="other-buttons">
-                        <button class="others"> Facebook </button>
-                        <button class="others"> Gmail </button>
-                        <button class="others"> Twitter </button>
+                    <button class="others"> Facebook </button>
+                    <button class="others"> Gmail </button>
+                    <button class="others"> Twitter </button>
                 </div>
             </div>
         </div>
