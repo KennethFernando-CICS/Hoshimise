@@ -1,0 +1,33 @@
+{
+  "owner": "dummy1",
+  "cartItemMap": [
+    [
+      {
+        "productId": 1,
+        "size": "S"
+      },
+      1
+    ],
+    [
+      {
+        "productId": 3,
+        "size": "L"
+      },
+      3
+    ],
+    [
+      {
+        "productId": 4,
+        "size": "XL"
+      },
+      5
+    ],
+    [
+      {
+        "productId": 5,
+        "size": "L"
+      },
+      8
+    ]
+  ]
+}

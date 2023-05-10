@@ -17,7 +17,7 @@
         response.setHeader("Expires", "0");
     %>
     <body>
-        <div class="content-container">
+<!--        <div class="content-container">
             <div class="selected">
                 <span class="delete-btn"></span>
                 <input type="hidden" name="checkbox_hidden" value="0"><input type="checkbox" class="ch-box" onclick="this.previousSibling.value = 1 - this.previousSibling.value">
@@ -38,7 +38,12 @@
                     </div>
                 </div>                       
             </div>
+        </div>-->
+        <form id="selected" action="">
+        <div class="cart-grid">           
+                <jsp:include page="/CartLoader"></jsp:include>           
         </div>
+        </form>
         <div class="buttons">
             <h2 class="total">Total price: <span class="total-price">$0.00</span></h2>
             <button form="purchase">
@@ -52,7 +57,7 @@
                 </div>
                 <span>Purchase</span>
             </button>
-            <button form="purchase" onClick="remove();">                    
+            <button form="selected" formaction="CartTakeOut">                    
                 <div class="svg-wrapper-1">
                     <div class="svg-wrapper">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -62,7 +67,7 @@
                     </div>
                 </div>
                 <span>Remove</span>
-            </button>
+            </button>            
         </div>
     </body>
 </html>

@@ -1,3 +1,11 @@
+.cart-grid{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    overflow-x: hidden;
+    margin-left: 15%;
+}
+
 .container-container{
     margin: 2%;
     display: flex;

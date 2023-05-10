@@ -1,7 +1,9 @@
 package controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,18 +13,17 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
+import java.util.Arrays;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import model.Cart;
 import model.CartItem;
 
-public class CartLoaderServlet extends HttpServlet {
+public class CartTakeOutServlet extends HttpServlet {
     Connection conn = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
@@ -39,15 +40,20 @@ public class CartLoaderServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try{
-            PrintWriter out = response.getWriter();
-            HttpSession session = request.getSession();
-            conn = connectDB(request.getServletContext());
-            String username = (String) session.getAttribute("username");
+        try ( PrintWriter out = response.getWriter()) {
+            conn = connectDB(getServletContext());
+            String username = (String) request.getSession().getAttribute("username");
+            Cart userCart = getCart(username);
             
-            if(username != null){
-                loggedIn(out,request,response);            
+            String[] itemsToRemove = request.getParameterValues("selected");
+            System.out.println(Arrays.toString(itemsToRemove));
+            for(String item: itemsToRemove){
+                String[] curItem = item.split("-");
+                userCart.takeOutFromCart(new CartItem(Integer.parseInt(curItem[0]),curItem[1]));
             }
+            writeCart(getServletContext(),username, userCart);
+            
+            response.sendRedirect("cart.jsp");
             
         } catch(Exception e){
             e.printStackTrace();
@@ -68,23 +74,30 @@ public class CartLoaderServlet extends HttpServlet {
         }
         catch (Exception e){
             e.printStackTrace();
-        }
-        
+        }        
         return conn;
     }
     
-    public ResultSet getProduct(int id){
+    public void writeCart(ServletContext sc,String username,Cart userCart){
         try {
-            String query = "SELECT * FROM PRODUCTS WHERE PROD_ID = ?";
+            String query = "SELECT CART FROM USERS WHERE USERNAME = ?";
             ps = conn.prepareStatement(query);
-            ps.setInt(1, id);
+            ps.setString(1, username);
+            rs = ps.executeQuery();
+            rs.next();           
             
-            return ps.executeQuery();
+            Gson gson = new GsonBuilder().setPrettyPrinting().enableComplexMapKeySerialization().create();
+            String newCartJson = gson.toJson(userCart);
+            System.out.println();
+            String path = sc.getRealPath("") + "/carts/" + rs.getString("CART");
             
-        } catch (SQLException ex) {
+            PrintWriter pw = new PrintWriter(new FileOutputStream(path));
+            pw.print(newCartJson);
+            pw.close();
+            System.out.println("Write?\n" + newCartJson);
+        } catch (Exception ex) {
             ex.printStackTrace();
-        }       
-        return null;
+        }
     }
     
     public Cart getCart(String username){
@@ -105,38 +118,10 @@ public class CartLoaderServlet extends HttpServlet {
         return null;
     }
     
-    public void loggedIn(PrintWriter out,HttpServletRequest request, HttpServletResponse response){
-        Cart currentCart = getCart((String) request.getSession().getAttribute("username"));
-        Map<CartItem,Integer> cartContents = currentCart.getCartItemMap();
-        for (Map.Entry<CartItem,Integer> entry: cartContents.entrySet()) {
-            try {
-                CartItem cartItem = entry.getKey();
-                int quantity = entry.getValue();
-                rs = getProduct(cartItem.getProductId());
-                rs.next();
-                String cartCardUrl = "cartItemCard.jsp" +
-                        "?itemName=" + rs.getString("NAME") +
-                        "&imgName=" + rs.getString("IMAGE") +
-                        "&price=" + rs.getDouble("PRICE") +
-                        "&stock=" + rs.getInt("STOCK") +
-                        "&quantity=" + quantity +
-                        "&size=" + cartItem.getSize() +
-                        "&cbValue=" + cartItem.getProductId() + "-" + cartItem.getSize();
-                
-                rd = request.getRequestDispatcher(cartCardUrl);
-                rd.include(request, response);
-                System.out.println("[CartLoader]Showing item " + rs.getString("NAME") + " - "+ cartItem.getSize() + " x" + quantity);
-                rs.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-    
     public String readFile(String fileName){
        String json = "";
         try {
-            String path = "/carts/" + fileName;
+            String path = "/carts/"+ fileName;
             InputStream is = getServletContext().getResourceAsStream(path);
             BufferedReader bf = new BufferedReader(new InputStreamReader(is));
             String line;
@@ -144,10 +129,11 @@ public class CartLoaderServlet extends HttpServlet {
                 json += line;
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
         }
         return json;
     }
+    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

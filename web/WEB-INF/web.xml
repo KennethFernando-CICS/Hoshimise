@@ -36,6 +36,10 @@
         <servlet-name>CartLoaderServlet</servlet-name>
         <servlet-class>controller.CartLoaderServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CartTakeOutServlet</servlet-name>
+        <servlet-class>controller.CartTakeOutServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
@@ -75,6 +79,10 @@
     <servlet-mapping>
         <servlet-name>LogoutServlet</servlet-name>
         <url-pattern>/LogoutServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CartTakeOutServlet</servlet-name>
+        <url-pattern>/CartTakeOut</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
