@@ -1,6 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +9,14 @@
         <link rel="icon" type="image/x-icon" href="logo/icon.png"/>
         <title>Register Page</title>
     </head>
+    <%
+        if (session.getAttribute("username") != null) {
+            response.sendRedirect("index.jsp");
+        }
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Progma", "no-cache");
+        response.setHeader("Expires", "0");
+    %>
     <body>
         <header>
             <div class="container">

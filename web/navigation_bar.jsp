@@ -10,11 +10,6 @@
         <link rel="icon" type="image/x-icon" href="logo/icon.png"/>
     </head>
     <body>
-        <%
-            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-            response.setHeader("Progma", "no-cache");
-            response.setHeader("Expires", "0");
-        %>
         <header>
             <div class="container">
                 <a href="index.jsp"><img src="resources/logo/logo.png" alt="logo" class="logo" /></a>

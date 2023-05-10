@@ -29,7 +29,7 @@ public class LoginServlet extends HttpServlet {
     }
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession();       
         boolean temp = false; // change this para session yung gagamitin pang verify kung successful yung login
         String userEmail = request.getParameter("email"), userPass = model.Encryption.encrypt(request.getParameter("password"),
                 getServletContext().getInitParameter("key"), getServletContext().getInitParameter("cipher"));
