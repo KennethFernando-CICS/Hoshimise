@@ -32,6 +32,10 @@
         <servlet-name>Register</servlet-name>
         <servlet-class>controller.RegisterServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CartLoaderServlet</servlet-name>
+        <servlet-class>controller.CartLoaderServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
@@ -59,6 +63,10 @@
     <servlet-mapping>
         <servlet-name>Register</servlet-name>
         <url-pattern>/Register</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CartLoaderServlet</servlet-name>
+        <url-pattern>/CartLoader</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
