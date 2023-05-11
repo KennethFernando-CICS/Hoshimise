@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class ProductLoadServlet extends HttpServlet {
+    String prefix = "[ProductLoader]";
     Connection conn = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
@@ -35,7 +36,7 @@ public class ProductLoadServlet extends HttpServlet {
             
             conn = connectDB(getServletContext());
             if(request.getParameter("sortBy") == null)
-                HomePage(out, count);
+                showUnsorted(out, count);
             else{
                 String sortBy = request.getParameter("sortBy");
                 showCategory(out,count,sortBy);
@@ -43,9 +44,20 @@ public class ProductLoadServlet extends HttpServlet {
         } catch (Exception e){
             e.printStackTrace();
 
+        } finally{
+            try{
+                rs.close();
+                ps.close();
+                conn.close();
+                System.out.println(prefix + "SQL Objects Closed.");
+            } catch(SQLException e){}
         }
     }
-
+    /**
+     * Gets connection from database
+     * @param sc ServletContext
+     * @return Connection
+     */
     public Connection connectDB(ServletContext sc)
     {
         Connection conn = null;       
@@ -61,12 +73,15 @@ public class ProductLoadServlet extends HttpServlet {
         }
         catch (Exception e){
             e.printStackTrace();
-        }
-        
+        }      
         return conn;
     }
-    
-    public void HomePage(PrintWriter out,int count){
+    /**
+     * Display all products
+     * @param out writer
+     * @param count of products
+     */
+    public void showUnsorted(PrintWriter out,int count){
         try {
             String query = "SELECT * FROM PRODUCTS";
             //String query = "SELECT * FROM PRODUCTS FETCH FIRST ? ROWS ONLY";
@@ -76,7 +91,8 @@ public class ProductLoadServlet extends HttpServlet {
             
             while (rs.next()) {
                 System.out.println("[ProductLoad]Loaded Product ID:" + rs.getInt("PROD_ID"));
-                out.println("<div class=\"item-container\">\n"
+                out.println(
+                        "<div class=\"item-container\">\n"
                         + "<div class=\"temp-image\">"
                         + "<img class=\"item-img\" src=\"resources/images/" + rs.getString("IMAGE") + "\"/>"
                         + "</div>"
@@ -89,17 +105,17 @@ public class ProductLoadServlet extends HttpServlet {
             ex.printStackTrace();
         } finally{
             try{
-                //Close
                 rs.close();
                 ps.close();
-                conn.close();
-                System.out.println("[ProductLoad]SQL Objects Closed.");
-            } catch(SQLException e){
-                System.out.println("[ProductLoad]SQL Objects Failed to Close.");
-            }
+            } catch(SQLException e){}
         }
     }
-    
+    /**
+     * Display specific category
+     * @param out writer to page
+     * @param count of products
+     * @param category 
+     */
     public void showCategory(PrintWriter out,int count,String category){
         try {
             category = '%' + category + '%';
@@ -109,8 +125,9 @@ public class ProductLoadServlet extends HttpServlet {
             rs = ps.executeQuery();
             
             while (rs.next()) {
-                System.out.println("[ProductLoad]Loaded Product ID:" + rs.getInt("PROD_ID"));
-                out.println("<div class=\"item-container\">\n"
+                System.out.println(prefix + "Loaded Product ID:" + rs.getInt("PROD_ID"));
+                out.println(
+                        "<div class=\"item-container\">\n"
                         + "<div class=\"temp-image\">"
                         + "<img class=\"item-img\" src=\"resources/images/" + rs.getString("IMAGE") + "\"/>"
                         + "</div>"
@@ -121,6 +138,11 @@ public class ProductLoadServlet extends HttpServlet {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally{
+            try{
+                rs.close();
+                ps.close();
+            } catch(SQLException e){}
         }
     }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

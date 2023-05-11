@@ -17,31 +17,15 @@
         response.setHeader("Expires", "0");
     %>
     <body>
-        <div class="content-container">
-            <div class="selected">
-                <span class="delete-btn"></span>
-                <input type="hidden" name="checkbox_hidden" value="0"><input type="checkbox" class="ch-box" onclick="this.previousSibling.value = 1 - this.previousSibling.value">
-            </div>
-            <div class="image">
-                <img src="resources/images/aot_bowl.jpg" />
-            </div>
-            <div class="information">
-                <div class="item-information">
-                    <div class="item-name">
-                        <h1>Item Name</h1>
-                    </div>
-                    <div class="other-info">
-                        <h4>Size: <span>Size</span></h4>
-                        <h4>Price: <span>$0.00</span></h4>
-                        <h4>Number of Stocks left: <span>000</span></h4>
-                        <label for="quantity">Quantity: <input type="number" value="0" min="1" name="quantity"></label>
-                    </div>
-                </div>                       
-            </div>
+        <form id="selected" action="">
+        <div class="cart-grid">           
+                <jsp:include page="/CartLoader"></jsp:include>           
         </div>
+        <input type="hidden" id="selectedTotalPrice" name="selectedTotalPrice" value="0.00">
+        </form>
         <div class="buttons">
-            <h2 class="total">Total price: <span class="total-price">$0.00</span></h2>
-            <button form="purchase">
+            <h2 class="total">Selected Total price: <span class="total-price">$</span><span class="total-price" id="selectedTotal">0.00</span></h2>
+            <button form="selected" formaction="success_page_buy.jsp">
                 <div class="svg-wrapper-1">
                     <div class="svg-wrapper">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -52,7 +36,7 @@
                 </div>
                 <span>Purchase</span>
             </button>
-            <button form="purchase" onClick="remove();">                    
+            <button form="selected" formaction="CartTakeOut">                    
                 <div class="svg-wrapper-1">
                     <div class="svg-wrapper">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -62,7 +46,8 @@
                     </div>
                 </div>
                 <span>Remove</span>
-            </button>
+            </button>            
         </div>
     </body>
+    <script src="total.js"></script>
 </html>

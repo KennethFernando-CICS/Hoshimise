@@ -1,26 +1,25 @@
 package controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
+import java.util.Arrays;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import model.Cart;
 import model.CartItem;
 
-public class CartLoaderServlet extends HttpServlet {
-    String prefix = "[CartLoader]";
+public class CartTakeOutServlet extends HttpServlet {
+    String prefix = "[CartTakeOut]";
     Connection conn = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
@@ -37,15 +36,26 @@ public class CartLoaderServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try{
-            PrintWriter out = response.getWriter();
-            HttpSession session = request.getSession();
-            conn = connectDB(request.getServletContext());
-            String username = (String) session.getAttribute("username");
+        try {
+            conn = connectDB(getServletContext());
+            String username = (String) request.getSession().getAttribute("username");
+            Cart userCart = getCart(username);
             
-            if(username != null){
-                printItems(out,request,response);            
+            if(request.getParameterValues("selected") == null){
+                response.sendRedirect("cart.jsp");
             }
+            if(request.getParameterValues("selected") != null){
+                String[] itemsToRemove = request.getParameterValues("selected");
+                System.out.println(prefix + Arrays.toString(itemsToRemove));
+                for(String item: itemsToRemove){
+                    String[] curItem = item.split("-");
+                    userCart.takeOutFromCart(new CartItem(Integer.parseInt(curItem[0]),curItem[1]));
+                }
+                writeCart(username, userCart);
+                int newSize = userCart.getCartItemMap().size();
+                System.out.println(prefix + "Remaining Items: " + newSize);             
+            }
+            response.sendRedirect("cart.jsp");
             
         } catch(Exception e){
             e.printStackTrace();
@@ -55,7 +65,7 @@ public class CartLoaderServlet extends HttpServlet {
                 ps.close();
                 conn.close();
                 System.out.println(prefix + "SQL Objects Closed.");
-            } catch(SQLException e){}
+            } catch(Exception e) {}
         }
     }
     /**
@@ -73,7 +83,7 @@ public class CartLoaderServlet extends HttpServlet {
             String username = sc.getInitParameter("dbUserName");
             String password = sc.getInitParameter("dbPassword");
             conn = DriverManager.getConnection(url, username, password);
-            System.out.println("[CartLoader]Connection success.");
+            System.out.println("[CartTakeOut]Connection success.");
         }
         catch (Exception e){
             e.printStackTrace();
@@ -81,62 +91,30 @@ public class CartLoaderServlet extends HttpServlet {
         return conn;
     }
     /**
-     * Get product from database using id
-     * @param Product ID
-     * @return ResultSet with product details
+     * Update cart in database
+     * @param username
+     * @param userCart to write
      */
-    public ResultSet getProduct(int id){
-        try {
-            String query = "SELECT * FROM PRODUCTS WHERE PROD_ID = ?";
+    public void writeCart(String username,Cart userCart){
+        try {    
+            String query = "UPDATE USERS SET CART = ? WHERE USERNAME = ?";
             ps = conn.prepareStatement(query);
-            ps.setInt(1, id);
             
-            rs = ps.executeQuery();
-            return rs;            
-        } catch (SQLException ex) {
+            Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+            String newCartJson = gson.toJson(userCart);
+            ps.setString(1, newCartJson);
+            ps.setString(2, username);
+            ps.executeUpdate();
+                                 
+        } catch (Exception ex) {
             ex.printStackTrace();
-        }       
-        return null;
-    }
-    /**
-     * Display all items in cart
-     * @param out writer to page
-     * @param request HttpServletRequest
-     * @param response HttpServletResponse
-     */
-    public void printItems(PrintWriter out,HttpServletRequest request, HttpServletResponse response){
-        Cart currentCart = getCart((String) request.getSession().getAttribute("username"));
-        Map<CartItem,Integer> cartContents = currentCart.getCartItemMap();
-        int i = 0;
-        for (Map.Entry<CartItem,Integer> entry: cartContents.entrySet()) {
+        } finally{
             try {
-                CartItem cartItem = entry.getKey();
-                int quantity = entry.getValue();
-                rs = getProduct(cartItem.getProductId());
-                rs.next();
-                String cartCardUrl = "cartItemCard.jsp" +
-                        "?itemName=" + rs.getString("NAME") +
-                        "&imgName=" + rs.getString("IMAGE") +
-                        "&price=" + rs.getDouble("PRICE") +
-                        "&stock=" + rs.getInt("STOCK") +
-                        "&quantity=" + quantity +
-                        "&size=" + cartItem.getSize() +
-                        "&cbValue=" + cartItem.getProductId() + "-" + cartItem.getSize() + "-" + quantity;
-                
-                rd = request.getRequestDispatcher(cartCardUrl);
-                rd.include(request, response);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            } finally{
-                try {
-                    rs.close();
-                    ps.close();
-                } catch (Exception e) {}
-            }
-            i++;
+                rs.close();
+                ps.close();
+            } catch (Exception e) {}
         }
-        System.out.println(prefix + "Showing: " + i + " items.");
-    }    
+    }
     /**
      * Get cart from DB
      * @param username
@@ -155,6 +133,8 @@ public class CartLoaderServlet extends HttpServlet {
             Cart currentCart = gson.fromJson(json, Cart.class);
             System.out.println(prefix + "Current Cart Size: " + currentCart.getCartItemMap().size());
             
+            rs.close();
+            ps.close();
             return currentCart;
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -165,7 +145,8 @@ public class CartLoaderServlet extends HttpServlet {
             } catch (Exception e) {}
         }
         return null;
-    }
+    }   
+    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
