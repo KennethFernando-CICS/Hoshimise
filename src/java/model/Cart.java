@@ -43,7 +43,7 @@ public class Cart {
             CartItem cartItem = entry.getKey();
             if(cartItem.equals(takeOutItem))
             {
-                System.out.println("[Cart]Took out ID: " + cartItem.getProductId() + " - " + cartItem.getSize() + " to cart.");
+                System.out.println("[Cart]Took out ID: " + cartItem.getProductId() + " - " + cartItem.getSize() + " from cart.");
                 cartItemMap.remove(cartItem);
                 return true;
             }

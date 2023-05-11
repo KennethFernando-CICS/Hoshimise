@@ -13,7 +13,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Date;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -43,20 +45,44 @@ public class CartTakeOutServlet extends HttpServlet {
         try ( PrintWriter out = response.getWriter()) {
             conn = connectDB(getServletContext());
             String username = (String) request.getSession().getAttribute("username");
-            Cart userCart = getCart(username);
+            String fileName = getFileName(username);
+            Cart userCart = getCart(fileName);
             
-            String[] itemsToRemove = request.getParameterValues("selected");
-            System.out.println(Arrays.toString(itemsToRemove));
-            for(String item: itemsToRemove){
-                String[] curItem = item.split("-");
-                userCart.takeOutFromCart(new CartItem(Integer.parseInt(curItem[0]),curItem[1]));
+            if(request.getParameterValues("selected") == null){
+                response.sendRedirect("cart.jsp");
             }
-            writeCart(getServletContext(),username, userCart);
-            
+            if(request.getParameterValues("selected") != null){
+                String[] itemsToRemove = request.getParameterValues("selected");
+                System.out.println("[CartTakeOut]" + Arrays.toString(itemsToRemove));
+                for(String item: itemsToRemove){
+                    String[] curItem = item.split("-");
+                    userCart.takeOutFromCart(new CartItem(Integer.parseInt(curItem[0]),curItem[1]));
+                }
+                writeCart(getServletContext(),fileName, userCart);
+                int newSize = userCart.getCartItemMap().size();
+                System.out.println("[CartTakeOut]Remaining Items: " + newSize);
+                userCart = getCart(fileName); 
+                LocalDateTime start = LocalDateTime.now();
+                while(userCart.getCartItemMap().size() != newSize){
+                   userCart = getCart(fileName);
+                }              
+                LocalDateTime end = LocalDateTime.now();
+                System.out.println("[CartTakeOut]Took " + (end.getSecond() - start.getSecond()) + " seconds to delete.");                
+            }
             response.sendRedirect("cart.jsp");
             
         } catch(Exception e){
             e.printStackTrace();
+        } finally{
+            try{
+                //Close
+                rs.close();
+                ps.close();
+                conn.close();
+                System.out.println("[ProductLoad]SQL Objects Closed.");
+            } catch(SQLException e){
+                System.out.println("[ProductLoad]SQL Objects Failed to Close.");
+            }
         }
     }
     
@@ -65,12 +91,12 @@ public class CartTakeOutServlet extends HttpServlet {
         try {
             String driver = sc.getInitParameter("jdbcClassName");
             Class.forName(driver);
-            System.out.println("LOADED DRIVER: " + driver);
             
             String url = sc.getInitParameter("jdbcDriverURL");
             String username = sc.getInitParameter("dbUserName");
             String password = sc.getInitParameter("dbPassword");
             conn = DriverManager.getConnection(url, username, password);
+            System.out.println("[CartTakeOut]Connection success.");
         }
         catch (Exception e){
             e.printStackTrace();
@@ -78,58 +104,55 @@ public class CartTakeOutServlet extends HttpServlet {
         return conn;
     }
     
-    public void writeCart(ServletContext sc,String username,Cart userCart){
+    public String getFileName(String username){
         try {
             String query = "SELECT CART FROM USERS WHERE USERNAME = ?";
             ps = conn.prepareStatement(query);
             ps.setString(1, username);
             rs = ps.executeQuery();
-            rs.next();           
+            rs.next();
+            String filename = rs.getString("CART");
+            rs.close();
+            ps.close();
+            return filename;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+    public void writeCart(ServletContext sc,String fileName,Cart userCart){
+        String path = sc.getRealPath("") + "/carts/" + fileName;
+        try (PrintWriter pw = new PrintWriter(new FileOutputStream(path));) {          
             
             Gson gson = new GsonBuilder().setPrettyPrinting().enableComplexMapKeySerialization().create();
             String newCartJson = gson.toJson(userCart);
             System.out.println();
-            String path = sc.getRealPath("") + "/carts/" + rs.getString("CART");
-            
-            PrintWriter pw = new PrintWriter(new FileOutputStream(path));
-            pw.print(newCartJson);
-            pw.close();
-            System.out.println("Write?\n" + newCartJson);
+           
+            pw.print(newCartJson);           
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
     
-    public Cart getCart(String username){
-        try {
-            String query = "SELECT CART FROM USERS WHERE USERNAME = ?";
-            ps = conn.prepareStatement(query);
-            ps.setString(1, username);
-            rs = ps.executeQuery();
-            rs.next();           
-            
-            String json = readFile(rs.getString("CART"));;
-            Gson gson = new Gson();
-            Cart currentCart = gson.fromJson(json, Cart.class);
-            return currentCart;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return null;
+    public Cart getCart(String fileName){          
+        String json = readFile(fileName);
+        Gson gson = new Gson();
+        Cart currentCart = gson.fromJson(json, Cart.class);
+        
+        return currentCart;
     }
     
     public String readFile(String fileName){
        String json = "";
-        try {
-            String path = "/carts/"+ fileName;
-            InputStream is = getServletContext().getResourceAsStream(path);
-            BufferedReader bf = new BufferedReader(new InputStreamReader(is));
+       String path = "/carts/"+ fileName;
+        try (InputStream is = getServletContext().getResourceAsStream(path);
+            BufferedReader bf = new BufferedReader(new InputStreamReader(is));){           
             String line;
             while((line = bf.readLine()) != null){
                 json += line;
             }
         } catch (Exception ex) {
-            //ex.printStackTrace();
+            ex.printStackTrace();
         }
         return json;
     }

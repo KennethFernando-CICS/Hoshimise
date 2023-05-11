@@ -51,6 +51,16 @@ public class CartLoaderServlet extends HttpServlet {
             
         } catch(Exception e){
             e.printStackTrace();
+        } finally{
+            try{
+                //Close
+                rs.close();
+                ps.close();
+                conn.close();
+                System.out.println("[ProductLoad]SQL Objects Closed.");
+            } catch(SQLException e){
+                System.out.println("[ProductLoad]SQL Objects Failed to Close.");
+            }
         }
     }
     
@@ -59,12 +69,12 @@ public class CartLoaderServlet extends HttpServlet {
         try {
             String driver = sc.getInitParameter("jdbcClassName");
             Class.forName(driver);
-            System.out.println("LOADED DRIVER: " + driver);
             
             String url = sc.getInitParameter("jdbcDriverURL");
             String username = sc.getInitParameter("dbUserName");
             String password = sc.getInitParameter("dbPassword");
             conn = DriverManager.getConnection(url, username, password);
+            System.out.println("[CartLoader]Connection success.");
         }
         catch (Exception e){
             e.printStackTrace();
@@ -79,7 +89,8 @@ public class CartLoaderServlet extends HttpServlet {
             ps = conn.prepareStatement(query);
             ps.setInt(1, id);
             
-            return ps.executeQuery();
+            rs = ps.executeQuery();
+            return rs;
             
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -87,27 +98,10 @@ public class CartLoaderServlet extends HttpServlet {
         return null;
     }
     
-    public Cart getCart(String username){
-        try {
-            String query = "SELECT CART FROM USERS WHERE USERNAME = ?";
-            ps = conn.prepareStatement(query);
-            ps.setString(1, username);
-            rs = ps.executeQuery();
-            rs.next();           
-            
-            String json = readFile(rs.getString("CART"));;
-            Gson gson = new Gson();
-            Cart currentCart = gson.fromJson(json, Cart.class);
-            return currentCart;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
-    
     public void loggedIn(PrintWriter out,HttpServletRequest request, HttpServletResponse response){
         Cart currentCart = getCart((String) request.getSession().getAttribute("username"));
         Map<CartItem,Integer> cartContents = currentCart.getCartItemMap();
+        int i = 0;
         for (Map.Entry<CartItem,Integer> entry: cartContents.entrySet()) {
             try {
                 CartItem cartItem = entry.getKey();
@@ -121,24 +115,26 @@ public class CartLoaderServlet extends HttpServlet {
                         "&stock=" + rs.getInt("STOCK") +
                         "&quantity=" + quantity +
                         "&size=" + cartItem.getSize() +
-                        "&cbValue=" + cartItem.getProductId() + "-" + cartItem.getSize();
+                        "&cbValue=" + cartItem.getProductId() + "-" + cartItem.getSize() + "-" + quantity;
                 
                 rd = request.getRequestDispatcher(cartCardUrl);
                 rd.include(request, response);
-                System.out.println("[CartLoader]Showing item " + rs.getString("NAME") + " - "+ cartItem.getSize() + " x" + quantity);
+
                 rs.close();
+                ps.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+            i++;
         }
+        System.out.println("[CartLoader]Showing: " + i + " items.");
     }
     
     public String readFile(String fileName){
        String json = "";
-        try {
-            String path = "/carts/" + fileName;
-            InputStream is = getServletContext().getResourceAsStream(path);
-            BufferedReader bf = new BufferedReader(new InputStreamReader(is));
+       String path = "/carts/" + fileName;
+        try (InputStream is = getServletContext().getResourceAsStream(path);
+                BufferedReader bf = new BufferedReader(new InputStreamReader(is));){        
             String line;
             while((line = bf.readLine()) != null){
                 json += line;
@@ -147,6 +143,28 @@ public class CartLoaderServlet extends HttpServlet {
             ex.printStackTrace();
         }
         return json;
+    }
+    
+    public Cart getCart(String username){
+        try {
+            String query = "SELECT CART FROM USERS WHERE USERNAME = ?";
+            ps = conn.prepareStatement(query);
+            ps.setString(1, username);
+            rs = ps.executeQuery();
+            rs.next();           
+            
+            String json = readFile(rs.getString("CART"));
+            Gson gson = new Gson();
+            Cart currentCart = gson.fromJson(json, Cart.class);
+            System.out.println("Current Cart Size: " + currentCart.getCartItemMap().size());
+            
+            rs.close();
+            ps.close();
+            return currentCart;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
