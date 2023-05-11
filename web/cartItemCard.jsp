@@ -18,7 +18,7 @@
                 <h4>Price: <span>$</span><span id="${param.cbValue}-price">${param.price}</span></h4>
                 <h4>Number of Stocks left: <span>${param.stock}</span></h4>
                 <label for="quantity">Quantity: 
-                    <input type="number" value="${param.quantity}" min="1" name="quantity" id="${param.cbValue}-qty" onClick="productTotal('${param.cbValue}')">
+                    <input type="number" onKeyDown="return false;" value="${param.quantity}" min="1" max="${param.stock}" name="quantity" id="${param.cbValue}-qty" onClick="productTotal('${param.cbValue}')">
                 </label>
             </div>
         </div>                       

@@ -1,10 +1,7 @@
 package controller;
 
 import com.google.gson.Gson;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,6 +20,7 @@ import model.Cart;
 import model.CartItem;
 
 public class CartLoaderServlet extends HttpServlet {
+    String prefix = "[CartLoader]";
     Connection conn = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
@@ -46,24 +44,25 @@ public class CartLoaderServlet extends HttpServlet {
             String username = (String) session.getAttribute("username");
             
             if(username != null){
-                loggedIn(out,request,response);            
+                printItems(out,request,response);            
             }
             
         } catch(Exception e){
             e.printStackTrace();
         } finally{
             try{
-                //Close
                 rs.close();
                 ps.close();
                 conn.close();
-                System.out.println("[ProductLoad]SQL Objects Closed.");
-            } catch(SQLException e){
-                System.out.println("[ProductLoad]SQL Objects Failed to Close.");
-            }
+                System.out.println(prefix + "SQL Objects Closed.");
+            } catch(SQLException e){}
         }
     }
-    
+    /**
+     * Gets connection from database
+     * @param sc ServletContext
+     * @return Connection
+     */
     public Connection connectDB(ServletContext sc){
         Connection conn = null;       
         try {
@@ -78,11 +77,14 @@ public class CartLoaderServlet extends HttpServlet {
         }
         catch (Exception e){
             e.printStackTrace();
-        }
-        
+        }        
         return conn;
     }
-    
+    /**
+     * Get product from database using id
+     * @param Product ID
+     * @return ResultSet with product details
+     */
     public ResultSet getProduct(int id){
         try {
             String query = "SELECT * FROM PRODUCTS WHERE PROD_ID = ?";
@@ -90,15 +92,19 @@ public class CartLoaderServlet extends HttpServlet {
             ps.setInt(1, id);
             
             rs = ps.executeQuery();
-            return rs;
-            
+            return rs;            
         } catch (SQLException ex) {
             ex.printStackTrace();
         }       
         return null;
     }
-    
-    public void loggedIn(PrintWriter out,HttpServletRequest request, HttpServletResponse response){
+    /**
+     * Display all items in cart
+     * @param out writer to page
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     */
+    public void printItems(PrintWriter out,HttpServletRequest request, HttpServletResponse response){
         Cart currentCart = getCart((String) request.getSession().getAttribute("username"));
         Map<CartItem,Integer> cartContents = currentCart.getCartItemMap();
         int i = 0;
@@ -119,32 +125,23 @@ public class CartLoaderServlet extends HttpServlet {
                 
                 rd = request.getRequestDispatcher(cartCardUrl);
                 rd.include(request, response);
-
-                rs.close();
-                ps.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
+            } finally{
+                try {
+                    rs.close();
+                    ps.close();
+                } catch (Exception e) {}
             }
             i++;
         }
-        System.out.println("[CartLoader]Showing: " + i + " items.");
-    }
-    
-    public String readFile(String fileName){
-       String json = "";
-       String path = "/carts/" + fileName;
-        try (InputStream is = getServletContext().getResourceAsStream(path);
-                BufferedReader bf = new BufferedReader(new InputStreamReader(is));){        
-            String line;
-            while((line = bf.readLine()) != null){
-                json += line;
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return json;
-    }
-    
+        System.out.println(prefix + "Showing: " + i + " items.");
+    }    
+    /**
+     * Get cart from DB
+     * @param username
+     * @return Cart of username
+     */
     public Cart getCart(String username){
         try {
             String query = "SELECT CART FROM USERS WHERE USERNAME = ?";
@@ -153,16 +150,19 @@ public class CartLoaderServlet extends HttpServlet {
             rs = ps.executeQuery();
             rs.next();           
             
-            String json = readFile(rs.getString("CART"));
+            String json = rs.getString("CART");
             Gson gson = new Gson();
             Cart currentCart = gson.fromJson(json, Cart.class);
-            System.out.println("Current Cart Size: " + currentCart.getCartItemMap().size());
+            System.out.println(prefix + "Current Cart Size: " + currentCart.getCartItemMap().size());
             
-            rs.close();
-            ps.close();
             return currentCart;
         } catch (SQLException ex) {
             ex.printStackTrace();
+        } finally{
+            try {
+                rs.close();
+                ps.close();
+            } catch (Exception e) {}
         }
         return null;
     }
