@@ -8,6 +8,14 @@
         <link rel="stylesheet" href="css/nav-bar.css" />
         <title>Successful Purchase</title>
     </head>
+    <%
+        if (session.getAttribute("username") == null) {
+            response.sendRedirect("index.jsp");
+        }
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Progma", "no-cache");
+        response.setHeader("Expires", "0");
+    %>
     <body>
         <header>
             <div class="container">
@@ -19,7 +27,7 @@
             <h3>The following items were purchased:</h3>
             <h3>The total amount is: <span class="total">Total Here</span></h3>
             <h2>Thank you for purchasing our merchandise, we hope to see you again!</h2>
-            <h2>To view your receipt, please <a href=""> click here. </a></h2> <!-- to show the receipt to the user -->
+            <h2>To print your receipt, please <a href="ReceiptServlet" target="_blank"> click here. </a></h2> <!-- to show the receipt to the user -->
             <h2>To return to the homepage, please <a href="index.jsp">click here.</a></h2> <!--setup the link back to homepage-->
         </div>
     </body>
