@@ -45,6 +45,8 @@ public class CartLoaderServlet extends HttpServlet {
             
             if(username != null){
                 printItems(out,request,response);            
+            }else{
+                response.sendRedirect("login.jsp");
             }
             
         } catch(Exception e){

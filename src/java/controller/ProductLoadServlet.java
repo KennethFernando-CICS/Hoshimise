@@ -58,8 +58,7 @@ public class ProductLoadServlet extends HttpServlet {
      * @param sc ServletContext
      * @return Connection
      */
-    public Connection connectDB(ServletContext sc)
-    {
+    public Connection connectDB(ServletContext sc){
         Connection conn = null;       
         try {
             String driver = sc.getInitParameter("jdbcClassName");
@@ -118,8 +117,7 @@ public class ProductLoadServlet extends HttpServlet {
      */
     public void showCategory(PrintWriter out,int count,String category){
         try {
-            category = '%' + category + '%';
-            String query = "SELECT * FROM PRODUCTS WHERE UPPER(NAME) LIKE UPPER(?)";
+            String query = "SELECT * FROM PRODUCTS WHERE CATEGORY = ?";
             ps = conn.prepareStatement(query);
             ps.setString(1, category);
             rs = ps.executeQuery();
