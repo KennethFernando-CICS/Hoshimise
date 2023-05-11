@@ -37,7 +37,7 @@
                             <li><a href="login.jsp">Login</a></li>
                         </c:if>
                         <c:if test="${username != null}">
-                        <li><a>${username}</a>
+                        <li><a>Hello, ${username}</a>
                             <div class="sub-menu">
                                 <ul class="dropdown">                                   
                                     <li><a href="">Profile</a></li>
