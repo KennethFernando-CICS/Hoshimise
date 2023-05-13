@@ -15,15 +15,13 @@
                 <a href="index.jsp"><img src="resources/logo/logo.png" alt="logo" class="logo" /></a>
                 <nav>
                     <ul>
+                        <c:if test="${testingMode == true}">
+                           <li><a href="LoginServlet?email=dummy1@gmail.com&password=testpassword">TestLogin</a></li> 
+                        </c:if>                        
                         <li><a href="index.jsp">Home</a></li>
                         <li><a href="cart.jsp">Cart</a></li>    
                         <li>
-                            <c:if test="${sortType eq 'product'}">
-                              <a href="">Categories</a> 
-                            </c:if>
-                            <c:if test="${sortType eq 'anime'}">
-                              <a href="">Anime</a>  
-                            </c:if>                          
+                            <a href="">Categories</a>                         
                             <div class="sub-menu">
                                 <ul class="dropdown">                                   
                                     <c:forEach var="cat" items="${categories}">

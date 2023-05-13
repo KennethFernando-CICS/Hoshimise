@@ -40,6 +40,18 @@
         <servlet-name>ReceiptServlet</servlet-name>
         <servlet-class>controller.ReceiptServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CartTakeOutServlet</servlet-name>
+        <servlet-class>controller.CartTakeOutServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PurchaseServlet</servlet-name>
+        <servlet-class>controller.PurchaseServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CaptchaCheckerServlet</servlet-name>
+        <servlet-class>controller.CaptchaCheckerServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
@@ -83,6 +95,18 @@
     <servlet-mapping>
         <servlet-name>ReceiptServlet</servlet-name>
         <url-pattern>/ReceiptServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CartTakeOutServlet</servlet-name>
+        <url-pattern>/CartTakeOut</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PurchaseServlet</servlet-name>
+        <url-pattern>/Purchase</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CaptchaCheckerServlet</servlet-name>
+        <url-pattern>/CaptchaChecker</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

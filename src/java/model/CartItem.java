@@ -1,24 +1,23 @@
 package model;
 
+import java.util.Objects;
+
 public class CartItem {
     
-    private Product product;
+    private int productId;
     private String size;
 
-    public CartItem() {
-    }
-
-    public CartItem(Product product, String size) {
-        this.product = product;
+    public CartItem(int productId, String size) {
+        this.productId = productId;
         this.size = size;
-    } 
-    
-    public Product getProduct() {
-        return product;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 
     public String getSize() {
@@ -28,5 +27,28 @@ public class CartItem {
     public void setSize(String size) {
         this.size = size;
     }
-           
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CartItem other = (CartItem) obj;
+        if (this.productId != other.productId) {
+            return false;
+        }
+        return Objects.equals(this.size, other.size);
+    }    
 }

@@ -1,23 +1,29 @@
 package controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Cart;
+import model.CartItem;
 
-public class ProductLoadServlet extends HttpServlet {
-    String prefix = "[ProductLoader]";
+public class CartTakeOutServlet extends HttpServlet {
+    String prefix = "[CartTakeOut]";
     Connection conn = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
+    RequestDispatcher rd = null;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -29,28 +35,40 @@ public class ProductLoadServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");      
-        try{
-            PrintWriter out = response.getWriter();
-            int count = Integer.parseInt((String)request.getParameter("count"));
-            
+        response.setContentType("text/html;charset=UTF-8");
+        try {
             conn = connectDB(getServletContext());
-            if(request.getParameter("sortBy") == null)
-                showUnsorted(out, count);
-            else{
-                String sortBy = request.getParameter("sortBy");
-                showCategory(out,count,sortBy);
+            String username = (String) request.getSession().getAttribute("username");
+            System.out.println(prefix + username);
+            Cart userCart = getCart(username);
+            String dest = (String) request.getParameter("dest");
+            System.out.println(prefix + "Dest:" + dest);
+            if(request.getParameterValues("selected") == null){
+                response.sendRedirect("cart.jsp");
             }
-        } catch (Exception e){
-            e.printStackTrace();
-
+            if(request.getParameterValues("selected") != null){
+                String[] itemsToRemove = request.getParameterValues("selected");
+                System.out.println(prefix + Arrays.toString(itemsToRemove));
+                for(String item: itemsToRemove){
+                    String[] curItem = item.split("-");
+                    userCart.takeOutFromCart(new CartItem(Integer.parseInt(curItem[0]),curItem[1]));
+                }
+                writeCart(username, userCart);
+                int newSize = userCart.getCartItemMap().size();
+                System.out.println(prefix + "Remaining Items: " + newSize);             
+            }
+            if(dest != null)
+                response.sendRedirect(dest);
+            
+        } catch(Exception e){
+            //e.printStackTrace();
         } finally{
             try{
                 rs.close();
                 ps.close();
                 conn.close();
                 System.out.println(prefix + "SQL Objects Closed.");
-            } catch(SQLException e){}
+            } catch(Exception e) {}
         }
     }
     /**
@@ -63,86 +81,75 @@ public class ProductLoadServlet extends HttpServlet {
         try {
             String driver = sc.getInitParameter("jdbcClassName");
             Class.forName(driver);
-            System.out.println("LOADED DRIVER: " + driver);
             
             String url = sc.getInitParameter("jdbcDriverURL");
             String username = sc.getInitParameter("dbUserName");
             String password = sc.getInitParameter("dbPassword");
             conn = DriverManager.getConnection(url, username, password);
+            System.out.println(prefix + "Connection success.");
         }
         catch (Exception e){
             e.printStackTrace();
-        }      
+        }        
         return conn;
     }
     /**
-     * Display all products
-     * @param out writer
-     * @param count of products
+     * Update cart in database
+     * @param username
+     * @param userCart to write
      */
-    public void showUnsorted(PrintWriter out,int count){
-        try {
-            String query = "SELECT * FROM PRODUCTS";
-            //String query = "SELECT * FROM PRODUCTS FETCH FIRST ? ROWS ONLY";
+    public void writeCart(String username,Cart userCart){
+        try {    
+            String query = "UPDATE USERS SET CART = ? WHERE USERNAME = ?";
             ps = conn.prepareStatement(query);
-            //ps.setInt(1, count);
-            rs = ps.executeQuery();
             
-            while (rs.next()) {
-                System.out.println("[ProductLoad]Loaded Product ID:" + rs.getInt("PROD_ID"));
-                out.println(
-                        "<div class=\"item-container\">\n"
-                        + "<div class=\"temp-image\">"
-                        + "<img class=\"item-img\" src=\"resources/images/" + rs.getString("IMAGE") + "\"/>"
-                        + "</div>"
-                        + "<h1 class=\"item-name truncate\">" + rs.getString("Name") + "</h1>\n"
-                        + "<p class=\"price\">$" + rs.getDouble("Price") + "</p>\n"
-                        + "</div>"
-                );  
-            }
-        } catch (SQLException ex) {
+            Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+            String newCartJson = gson.toJson(userCart);
+            ps.setString(1, newCartJson);
+            ps.setString(2, username);
+            ps.executeUpdate();
+                                 
+        } catch (Exception ex) {
             ex.printStackTrace();
         } finally{
-            try{
+            try {
                 rs.close();
                 ps.close();
-            } catch(SQLException e){}
+            } catch (Exception e) {}
         }
     }
     /**
-     * Display specific category
-     * @param out writer to page
-     * @param count of products
-     * @param category 
+     * Get cart from DB
+     * @param username
+     * @return Cart of username
      */
-    public void showCategory(PrintWriter out,int count,String category){
+    public Cart getCart(String username){
         try {
-            String query = "SELECT * FROM PRODUCTS WHERE CATEGORY = ?";
+            String query = "SELECT CART FROM USERS WHERE USERNAME = ?";
             ps = conn.prepareStatement(query);
-            ps.setString(1, category);
+            ps.setString(1, username);
             rs = ps.executeQuery();
+            rs.next();           
             
-            while (rs.next()) {
-                System.out.println(prefix + "Loaded Product ID:" + rs.getInt("PROD_ID"));
-                out.println(
-                        "<div class=\"item-container\">\n"
-                        + "<div class=\"temp-image\">"
-                        + "<img class=\"item-img\" src=\"resources/images/" + rs.getString("IMAGE") + "\"/>"
-                        + "</div>"
-                        + "<h1 class=\"item-name truncate\">" + rs.getString("Name") + "</h1>\n"
-                        + "<p class=\"price\">$" + rs.getDouble("Price") + "</p>\n"
-                        + "</div>"
-                );  
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            String json = rs.getString("CART");
+            Gson gson = new Gson();
+            Cart currentCart = gson.fromJson(json, Cart.class);
+            System.out.println(prefix + "Current Cart Size: " + currentCart.getCartItemMap().size());
+            
+            rs.close();
+            ps.close();
+            return currentCart;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         } finally{
-            try{
+            try {
                 rs.close();
                 ps.close();
-            } catch(SQLException e){}
+            } catch (Exception e) {}
         }
-    }
+        return null;
+    }   
+    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
