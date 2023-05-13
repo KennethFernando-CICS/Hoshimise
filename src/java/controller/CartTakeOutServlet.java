@@ -39,8 +39,10 @@ public class CartTakeOutServlet extends HttpServlet {
         try {
             conn = connectDB(getServletContext());
             String username = (String) request.getSession().getAttribute("username");
+            System.out.println(prefix + username);
             Cart userCart = getCart(username);
-            
+            String dest = (String) request.getParameter("dest");
+            System.out.println(prefix + "Dest:" + dest);
             if(request.getParameterValues("selected") == null){
                 response.sendRedirect("cart.jsp");
             }
@@ -55,10 +57,11 @@ public class CartTakeOutServlet extends HttpServlet {
                 int newSize = userCart.getCartItemMap().size();
                 System.out.println(prefix + "Remaining Items: " + newSize);             
             }
-            response.sendRedirect("cart.jsp");
+            if(dest != null)
+                response.sendRedirect(dest);
             
         } catch(Exception e){
-            e.printStackTrace();
+            //e.printStackTrace();
         } finally{
             try{
                 rs.close();
@@ -83,7 +86,7 @@ public class CartTakeOutServlet extends HttpServlet {
             String username = sc.getInitParameter("dbUserName");
             String password = sc.getInitParameter("dbPassword");
             conn = DriverManager.getConnection(url, username, password);
-            System.out.println("[CartTakeOut]Connection success.");
+            System.out.println(prefix + "Connection success.");
         }
         catch (Exception e){
             e.printStackTrace();

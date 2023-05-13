@@ -53,9 +53,12 @@ public class CartLoaderServlet extends HttpServlet {
             e.printStackTrace();
         } finally{
             try{
-                rs.close();
-                ps.close();
-                conn.close();
+                if(rs != null)
+                    rs.close();
+                if(ps != null)
+                    rs.close();
+                if(conn != null)
+                    conn.close();
                 System.out.println(prefix + "SQL Objects Closed.");
             } catch(SQLException e){}
         }
@@ -84,7 +87,7 @@ public class CartLoaderServlet extends HttpServlet {
     }
     /**
      * Get product from database using id
-     * @param Product ID
+     * @param id of product
      * @return ResultSet with product details
      */
     public ResultSet getProduct(int id){
@@ -123,7 +126,7 @@ public class CartLoaderServlet extends HttpServlet {
                         "&stock=" + rs.getInt("STOCK") +
                         "&quantity=" + quantity +
                         "&size=" + cartItem.getSize() +
-                        "&cbValue=" + cartItem.getProductId() + "-" + cartItem.getSize() + "-" + quantity;
+                        "&itemId=" + cartItem.getProductId() + "-" + cartItem.getSize() + "-" + quantity;
                 
                 rd = request.getRequestDispatcher(cartCardUrl);
                 rd.include(request, response);

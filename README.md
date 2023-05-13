@@ -1,7 +1,6 @@
 ![img1](/web/resources/logo/logo.png)
 * * *
-## UST CICS ICS2609 2CSB Group 5 - 
-## Final Academic Project
+## UST CICS ICS2609 2CSB Group 5 - Final Academic Project
 Members:
 * De Leon, Elijah John
 * Fernandez, Aaron Jacob
@@ -165,6 +164,22 @@ CREATE TABLE USERS (USER_ID INTEGER NOT NULL, USERNAME VARCHAR(30) NOT NULL, EMA
 ```sql
 INSERT INTO APP.USERS (USER_ID, USERNAME, EMAIL, PASSWORD, CART) 
 	VALUES (1, 'Dummy1', 'dummy1@gmail.com', '9COiVoB+pUxvSZT7Tci9og==', '{"owner":"Dummy1","cartItemMap":[[{"productId":1,"size":"S"},1],[{"productId":3,"size":"L"},3],[{"productId":4,"size":"XL"},5],[{"productId":5,"size":"L"},8]]}');
+```
+</details>
+
+<details>
+    <summary>Transactions Database</summary>
+
+### CREATE SCRIPT
+```sql
+CREATE TABLE TRANSACTIONS (TRAN_ID INTEGER NOT NULL, ITEMS VARCHAR(32672) NOT NULL, TOTAL DOUBLE NOT NULL, DATETIME TIMESTAMP NOT NULL, PRIMARY KEY (TRAN_ID));
+```
+### INSERT SCRIPT
+```sql
+INSERT INTO APP.TRANSACTIONS (TRAN_ID, ITEMS, TOTAL, DATETIME) 
+	VALUES (0, '{"owner":"Dummy1","cartItemMap":[[{"productId":4,"size":"XL"},5]]}', 139.5, '2023-05-13 19:22:20.11');
+INSERT INTO APP.TRANSACTIONS (TRAN_ID, ITEMS, TOTAL, DATETIME) 
+	VALUES (1, '{"owner":"Dummy1","cartItemMap":[[{"productId":1,"size":"S"},1]]}', 19.9, '2023-05-13 19:24:16.095');
 ```
 </details>
 
