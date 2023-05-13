@@ -57,6 +57,7 @@ public class PurchaseServlet extends HttpServlet {
             rd = request.getRequestDispatcher("CartTakeOut");
             rd.include(request, response);
             //Send to Success Purchase Page
+            request.getSession().setAttribute("selectedTotalPrice", request.getParameter("selectedTotalPrice"));
             request.getSession().setAttribute("boughtMap", boughtMap);
             response.sendRedirect("success_page_buy.jsp");
         } catch(Exception e) {
