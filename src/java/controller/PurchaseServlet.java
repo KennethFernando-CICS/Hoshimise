@@ -1,11 +1,15 @@
 package controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.RequestDispatcher;
@@ -14,6 +18,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Cart;
+import model.CartItem;
 
 public class PurchaseServlet extends HttpServlet {
     String prefix = "[Purchase]";
@@ -38,7 +44,9 @@ public class PurchaseServlet extends HttpServlet {
             if(request.getParameterValues("selected") == null){
                 response.sendRedirect("cart.jsp");
             }
+            String owner = (String) request.getSession().getAttribute("username");
             String[] selected = request.getParameterValues("selected");
+            String selTotalPrice = request.getParameter("selectedTotalPrice");
             //Adding Selected Products to Purchased List
             Map<String, Map<Integer, Double>> boughtMap = new HashMap<>();
             for (String item : selected){
@@ -56,8 +64,12 @@ public class PurchaseServlet extends HttpServlet {
             //Removing Selected Products from Cart
             rd = request.getRequestDispatcher("CartTakeOut");
             rd.include(request, response);
+            
+            //Add Record to Database
+            createTransactionRecord(owner, selected, selTotalPrice);
+            
             //Send to Success Purchase Page
-            request.getSession().setAttribute("selectedTotalPrice", request.getParameter("selectedTotalPrice"));
+            request.getSession().setAttribute("selectedTotalPrice", selTotalPrice);
             request.getSession().setAttribute("boughtMap", boughtMap);
             response.sendRedirect("success_page_buy.jsp");
         } catch(Exception e) {
@@ -113,6 +125,56 @@ public class PurchaseServlet extends HttpServlet {
         }       
         return null;
     }
+    /**
+     * Adds transaction record to database
+     * @param owner of cart
+     * @param selectedItems to purchase
+     * @param selTotalPrice 
+     */
+    private void createTransactionRecord(String owner,String[] selectedItems, String selTotalPrice) {
+        try {
+            //Transaction ID
+            String getID = "SELECT MAX(TRAN_ID) AS ID FROM TRANSACTIONS";
+            ps = conn.prepareStatement(getID);
+            rs = ps.executeQuery();
+            int id = 0;
+            if(rs.next())
+               id = rs.getInt("ID") + 1; 
+            System.out.println(prefix + "Transaction ID:" + id);
+            
+            //Bought items cart
+            Cart boughtCart = new Cart(owner);
+            int itemId;
+            String size;
+            int qty;
+            for (String item : selectedItems){
+                System.out.println(prefix + item);
+                String[] itemDetails = item.split("-");
+                itemId = Integer.parseInt(itemDetails[0]);
+                size = itemDetails[1];
+                qty = Integer.parseInt(itemDetails[2]);
+                boughtCart.addToCart(new CartItem(itemId, size), qty);
+            }            
+            Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+            String cartJson = gson.toJson(boughtCart);
+            //Total Price
+            double totalPrice = Double.parseDouble(selTotalPrice);
+            
+            //Date Time of Purchase
+            Timestamp dateOfPurchase = new Timestamp(new Date().getTime());
+            
+            String query = "INSERT INTO TRANSACTIONS (TRAN_ID, ITEMS, TOTAL, DATETIME) VALUES (?,?,?,?)";
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, id);
+            ps.setString(2, cartJson);
+            ps.setDouble(3, totalPrice);
+            ps.setTimestamp(4, dateOfPurchase);
+            ps.executeUpdate();
+                       
+        } catch (Exception e) {
+          e.printStackTrace();
+        } 
+    }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -151,5 +213,4 @@ public class PurchaseServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }
