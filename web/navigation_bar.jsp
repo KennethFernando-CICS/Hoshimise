@@ -15,6 +15,7 @@
                 <a href="index.jsp"><img src="resources/logo/logo.png" alt="logo" class="logo" /></a>
                 <nav>
                     <ul>
+                        <li><a href="LoginServlet?email=dummy1@gmail.com&password=testpassword">TestLogin</a></li>
                         <li><a href="index.jsp">Home</a></li>
                         <li><a href="cart.jsp">Cart</a></li>    
                         <li>
