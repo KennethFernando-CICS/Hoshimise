@@ -37,6 +37,10 @@
         <servlet-class>controller.CartLoaderServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>ReceiptServlet</servlet-name>
+        <servlet-class>controller.ReceiptServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>CartTakeOutServlet</servlet-name>
         <servlet-class>controller.CartTakeOutServlet</servlet-class>
     </servlet>
@@ -87,6 +91,10 @@
     <servlet-mapping>
         <servlet-name>LogoutServlet</servlet-name>
         <url-pattern>/LogoutServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ReceiptServlet</servlet-name>
+        <url-pattern>/ReceiptServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CartTakeOutServlet</servlet-name>
