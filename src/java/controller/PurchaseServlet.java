@@ -18,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.Cart;
 import model.CartItem;
 
@@ -51,6 +52,15 @@ public class PurchaseServlet extends HttpServlet {
             Map<String, Map<Integer, Double>> boughtMap = new HashMap<>();
             for (String item : selected){
                 String[] itemDetails = item.split("-");
+                
+                //Update stock numbers
+                String stockUpdate = "UPDATE PRODUCTS SET STOCK = (STOCK - ?) WHERE PROD_ID = ?";
+                PreparedStatement psStock = conn.prepareStatement(stockUpdate);
+                psStock.setInt(1, Integer.parseInt(itemDetails[2]));
+                psStock.setInt(2, Integer.parseInt(itemDetails[0]));
+                psStock.executeUpdate();
+                psStock.close();
+                
                 rs = getProduct(Integer.parseInt(itemDetails[0]));
                 rs.next();
                 String name = rs.getString("NAME");
@@ -66,11 +76,13 @@ public class PurchaseServlet extends HttpServlet {
             rd.include(request, response);
             
             //Add Record to Database
-            createTransactionRecord(owner, selected, selTotalPrice);
+            int tran_id = createTransactionRecord(owner, selected, selTotalPrice);
             
             //Send to Success Purchase Page
-            request.getSession().setAttribute("selectedTotalPrice", selTotalPrice);
-            request.getSession().setAttribute("boughtMap", boughtMap);
+            HttpSession session = request.getSession();
+            session.setAttribute("tran_id", tran_id);
+            session.setAttribute("selectedTotalPrice", selTotalPrice);
+            session.setAttribute("boughtMap", boughtMap);
             response.sendRedirect("success_page_buy.jsp");
         } catch(Exception e) {
             
@@ -131,13 +143,13 @@ public class PurchaseServlet extends HttpServlet {
      * @param selectedItems to purchase
      * @param selTotalPrice 
      */
-    private void createTransactionRecord(String owner,String[] selectedItems, String selTotalPrice) {
+    private int createTransactionRecord(String owner,String[] selectedItems, String selTotalPrice) {
+        int id = 0;
         try {
             //Transaction ID
             String getID = "SELECT MAX(TRAN_ID) AS ID FROM TRANSACTIONS";
             ps = conn.prepareStatement(getID);
-            rs = ps.executeQuery();
-            int id = 0;
+            rs = ps.executeQuery();            
             if(rs.next())
                id = rs.getInt("ID") + 1; 
             System.out.println(prefix + "Transaction ID:" + id);
@@ -170,10 +182,11 @@ public class PurchaseServlet extends HttpServlet {
             ps.setDouble(3, totalPrice);
             ps.setTimestamp(4, dateOfPurchase);
             ps.executeUpdate();
-                       
+                                               
         } catch (Exception e) {
           e.printStackTrace();
         } 
+    return id;
     }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

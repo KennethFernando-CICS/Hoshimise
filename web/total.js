@@ -1,5 +1,6 @@
 function productTotal(itemName){
     var cb = document.getElementById(itemName + "-cb");
+    console.log(cb.value); 
     var productTotal = document.getElementById(itemName + "-total");
     var productTotalParam = document.getElementById(itemName + "-totalParam");
     var product = productTotal.value;
@@ -8,14 +9,21 @@ function productTotal(itemName){
     if(cb.checked){
         product = (cbqty * cbprice).toFixed(2);
         productTotal.value = product;   
-        productTotalParam.value = product;           
+        productTotalParam.value = product;                   
     }else if(!cb.checked) {
         product = 0.00.toFixed(2);
         productTotal.value = product;
         productTotalParam.value = product;     
     }
+    cb.value = newCbVal(cb.value,cbqty);
+    console.log("New CbVal: " + cb.value)
     cartTotal();
 }
+function newCbVal(curVal,quantity){
+    var details = curVal.split("-");
+    return details[0] + "-" + details[1] + "-" + quantity;
+}
+
 function cartTotal(){
     var totalSpan = document.getElementById("selectedTotal");
     var totalParam = document.getElementById("selectedTotalPrice");
@@ -28,8 +36,8 @@ function cartTotal(){
     }        
     totalParam.value = parseFloat(selectedTotal).toFixed(2);
     totalSpan.textContent = parseFloat(selectedTotal).toFixed(2);
-    console.log(totals);
-    console.log(totalParam.value);
+    console.log("Items Total: " + totals);
+    console.log("Selected Total: " + totalParam.value);
 }
 function qtyValidate(itemName){
     var inputBox = document.getElementById(itemName + "-qty");

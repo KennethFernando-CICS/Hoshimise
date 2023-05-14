@@ -43,7 +43,7 @@
             </table>               
             <h3>The total amount is: $<span class="total">${sessionScope.selectedTotalPrice}</span></h3>
             <h2>Thank you for purchasing our merchandise, we hope to see you again!</h2>
-            <h2>To print your receipt, please <a href="ReceiptServlet" target="_blank"> click here. </a></h2> <!-- to show the receipt to the user -->
+            <h2>To print your receipt, please <a href="Receipt?tran_id=${sessionScope.tran_id}" target="_blank"> click here. </a></h2> <!-- to show the receipt to the user -->          
             <h2>To return to the homepage, please <a href="index.jsp">click here.</a></h2> <!--setup the link back to homepage-->
         </div>
     </body>
