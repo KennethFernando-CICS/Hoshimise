@@ -94,7 +94,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ReceiptServlet</servlet-name>
-        <url-pattern>/ReceiptServlet</url-pattern>
+        <url-pattern>/Receipt</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CartTakeOutServlet</servlet-name>

@@ -78,7 +78,7 @@ public class CartLoaderServlet extends HttpServlet {
             String username = sc.getInitParameter("dbUserName");
             String password = sc.getInitParameter("dbPassword");
             conn = DriverManager.getConnection(url, username, password);
-            System.out.println("[CartLoader]Connection success.");
+            System.out.println(prefix + "Connection success.");
         }
         catch (Exception e){
             e.printStackTrace();
