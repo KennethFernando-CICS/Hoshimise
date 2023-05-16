@@ -109,10 +109,18 @@ public class CartLoaderServlet extends HttpServlet {
      * @param request HttpServletRequest
      * @param response HttpServletResponse
      */
-    public void printItems(PrintWriter out,HttpServletRequest request, HttpServletResponse response){
+    public void printItems(PrintWriter out,HttpServletRequest request, HttpServletResponse response) throws IOException{
         Cart currentCart = getCart((String) request.getSession().getAttribute("username"));
         Map<CartItem,Integer> cartContents = currentCart.getCartItemMap();
         int i = 0;
+        if(currentCart.getCartItemMap().size() == 0){
+            response.getWriter().print(
+            "<div style=\"width: 80%; display: flex;align-items:center;justify-content: center;color:white;size:5rem;\">\n" +
+                "<br><h1>Your cart is empty</h1>\n" +
+                "<img style=\"vertical-align:middle;\" height=\"360\" src=\"resources/logo/empty_CArT.png\"/>\n<br>" +
+            "</div>"
+            );
+        }
         for (Map.Entry<CartItem,Integer> entry: cartContents.entrySet()) {
             try {
                 CartItem cartItem = entry.getKey();
