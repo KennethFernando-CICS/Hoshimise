@@ -31,6 +31,11 @@ public class Cart {
         this.cartItemMap = cartItemMap;
     }
     
+    /**
+     * Adds cartItem object to the itemMap of the Cart
+     * @param cartItem
+     * @param quantity 
+     */
     public void addToCart(CartItem cartItem, int quantity){
         if(quantity <= 0)
             quantity = 1;
@@ -38,6 +43,11 @@ public class Cart {
         System.out.println("[Cart]Added ID: " + cartItem.getProductId() + " - " + cartItem.getSize() + " to cart.");
     }
     
+    /**
+     * Removes an item from the itemMap of the Cart
+     * @param takeOutItem
+     * @return 
+     */
     public boolean takeOutFromCart(CartItem takeOutItem){
         for(Map.Entry<CartItem,Integer> entry: this.cartItemMap.entrySet()){
             CartItem cartItem = entry.getKey();

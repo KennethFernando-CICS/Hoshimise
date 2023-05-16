@@ -89,16 +89,20 @@ public class ProductLoadServlet extends HttpServlet {
             rs = ps.executeQuery();
             
             while (rs.next()) {
-                System.out.println("[ProductLoad]Loaded Product ID:" + rs.getInt("PROD_ID"));
-                out.println(
-                        "<div class=\"item-container\">\n"
-                        + "<div class=\"temp-image\">"
-                        + "<img class=\"item-img\" src=\"resources/images/" + rs.getString("IMAGE") + "\"/>"
-                        + "</div>"
-                        + "<h1 class=\"item-name truncate\">" + rs.getString("Name") + "</h1>\n"
-                        + "<p class=\"price\">$" + rs.getDouble("Price") + "</p>\n"
-                        + "</div>"
-                );  
+                if(rs.getInt("STOCK") != 0){                
+                    System.out.println("[ProductLoad]Loaded Product ID:" + rs.getInt("PROD_ID"));
+                    out.println(
+                            "<div class=\"item-container\">\n"
+                            + "<div class=\"temp-image\">"
+                            + "<img class=\"item-img\" src=\"resources/images/" + rs.getString("IMAGE") + "\"/>"
+                            + "</div>"
+                            + "<h1 class=\"item-name truncate\">" + rs.getString("Name") + "</h1>\n"
+                            + "<p class=\"price\">$" + rs.getDouble("Price") + "</p>\n"
+                            + "</div>"
+                    );
+                } else{
+                    System.out.println(prefix + "Prod ID:" + rs.getString("PROD_ID") + "is out of stock.");
+                } 
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

@@ -18,18 +18,18 @@ import javax.servlet.ServletContextListener;
  */
 public class HoshimiseListener implements ServletContextListener {
     
-    private final String logPrefix = "[HoshimiseListener]";
+    private final String prefix = "[HoshimiseListener]";
     @Override
     public void contextInitialized(ServletContextEvent sce) {
     Connection conn = null;
     Statement stmt = null;
     ResultSet rs = null;
         try {
-            System.out.println(logPrefix + "Hoshimise Web Application Initialized. ");
+            System.out.println(prefix + "Hoshimise Web Application Initialized. ");
             ServletContext sc = sce.getServletContext();
             List<String> categoryList = new ArrayList<>();
             conn = connectDB(sc);
-            String query = "SELECT DISTINCT(CATEGORY) FROM PRODUCTS";
+            String query = "SELECT DISTINCT(CATEGORY) FROM PRODUCTS"; //Used to get unique category names from the database
             stmt = conn.createStatement();
             rs = stmt.executeQuery(query);
             while(rs.next()){
@@ -44,14 +44,14 @@ public class HoshimiseListener implements ServletContextListener {
                 rs.close();
                 stmt.close();
                 conn.close();
-                System.out.println(logPrefix + "SQL Objects Closed.");
+                System.out.println(prefix + "SQL Objects Closed.");
             } catch(SQLException e){}
         }
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        System.out.println(logPrefix + "Hoshimise Web Application Shut Down. ");
+        System.out.println(prefix + "Hoshimise Web Application Shut Down. ");
       
     }
     

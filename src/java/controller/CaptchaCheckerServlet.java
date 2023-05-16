@@ -28,7 +28,7 @@ public class CaptchaCheckerServlet extends HttpServlet {
             //Captcha Answer Validator
             if(captcha.isCorrect(captchaAnswer)){
                 System.out.println(prefix + "Correct captcha answer.");
-                request.getRequestDispatcher("Purchase").forward(request, response);//Proceed Purchase
+                request.getRequestDispatcher("Purchase").forward(request, response);//Proceed to Purchase
             } else {                
                 System.out.println(prefix + "Incorrect captcha answer.");
                 out.print("<script type='text/javascript'> alert('Wrong Captcha Answer.'); location='cart.jsp';</script>");//Go Back to Cart               

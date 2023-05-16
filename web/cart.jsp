@@ -77,5 +77,5 @@
     </div>
     </body>
      
-    <script src="total.js"></script>
+    <script src="js/cartFunctions.js"></script>
 </html>
