@@ -38,8 +38,8 @@
                         <li><a>Hello, ${username}</a>
                             <div class="sub-menu">
                                 <ul class="dropdown">                                   
-                                    <li><a href="">Profile</a></li>
-                                    <li><a href="">Settings</a></li>
+                                    <!--<li><a href="">Profile</a></li>-->
+                                    <!--<li><a href="">Settings</a></li>-->
                                     <li><a href="LogoutServlet">Log Out</a></li>                                    
                                 </ul>
                            </div>

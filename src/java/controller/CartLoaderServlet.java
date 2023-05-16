@@ -113,7 +113,7 @@ public class CartLoaderServlet extends HttpServlet {
         Cart currentCart = getCart((String) request.getSession().getAttribute("username"));
         Map<CartItem,Integer> cartContents = currentCart.getCartItemMap();
         int i = 0;
-        if(currentCart.getCartItemMap().size() == 0){
+        if(currentCart.getCartItemMap().isEmpty()){
             response.getWriter().print(
             "<div style=\"width: 80%; display: flex;align-items:center;justify-content: center;color:white;size:5rem;\">\n" +
                 "<br><h1>Your cart is empty</h1>\n" +
@@ -127,6 +127,7 @@ public class CartLoaderServlet extends HttpServlet {
                 int quantity = entry.getValue();
                 rs = getProduct(cartItem.getProductId());
                 rs.next();
+                quantity = (quantity > rs.getInt("STOCK")) ? rs.getInt("STOCK") : quantity;//Check how many are left in stock and change value if current stock is lower than cart item qty
                 String cartCardUrl = "cartItemCard.jsp" +
                         "?itemName=" + rs.getString("NAME") +
                         "&imgName=" + rs.getString("IMAGE") +

@@ -24,7 +24,7 @@ public class ReceiptServlet extends HttpServlet {
         response.setContentType("application/pdf");
         OutputStream out = response.getOutputStream();
         HttpSession session = request.getSession();
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"); //format for the local date
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"); //Format for the purchase date
         String purchaseTime = dtf.format(LocalDateTime.now());
         double total = 0.00;
         Cart itemsBought = null;
@@ -71,7 +71,7 @@ public class ReceiptServlet extends HttpServlet {
             float itemListHeight = (float) Math.ceil(itemList.getTotalHeight()/10) * 10;//For Dynamic Height based on product list
            
             //iTextPDF Setup
-            Rectangle rec = new Rectangle(Utilities.inchesToPoints(4), Utilities.inchesToPoints(7) + itemListHeight);
+            Rectangle rec = new Rectangle(Utilities.inchesToPoints(4), Utilities.inchesToPoints(7) + itemListHeight); //7in height + table height for dynamic height scaling
             Document doc = new Document(rec);
             
             PdfWriter writer = PdfWriter.getInstance(doc, out);

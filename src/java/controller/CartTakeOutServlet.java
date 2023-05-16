@@ -43,17 +43,17 @@ public class CartTakeOutServlet extends HttpServlet {
             Cart userCart = getCart(username);
             String dest = (String) request.getParameter("dest");
             System.out.println(prefix + "Dest:" + dest);
-            if(request.getParameterValues("selected") == null){
+            if(request.getParameterValues("selected") == null){ //If no items are selected to be removed from the cart return to cart page
                 response.sendRedirect("cart.jsp");
             }
             if(request.getParameterValues("selected") != null){
                 String[] itemsToRemove = request.getParameterValues("selected");
                 System.out.println(prefix + Arrays.toString(itemsToRemove));
-                for(String item: itemsToRemove){
+                for(String item: itemsToRemove){ //Remove each selected item from cart
                     String[] curItem = item.split("-");
                     userCart.takeOutFromCart(new CartItem(Integer.parseInt(curItem[0]),curItem[1]));
                 }
-                writeCart(username, userCart);
+                writeCart(username, userCart); //Update cart in database
                 int newSize = userCart.getCartItemMap().size();
                 System.out.println(prefix + "Remaining Items: " + newSize);             
             }
