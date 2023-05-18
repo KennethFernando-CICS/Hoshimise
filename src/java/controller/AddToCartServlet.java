@@ -38,6 +38,9 @@ public class AddToCartServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try ( PrintWriter out = response.getWriter()) {
             conn = connectDB(getServletContext());
+            if((String) request.getSession().getAttribute("username") == null){
+                response.sendRedirect("login.jsp");
+            }
             String username = (String) request.getSession().getAttribute("username");
             Cart cart = getCart(username);
             String size = request.getParameter("size");
@@ -50,7 +53,7 @@ public class AddToCartServlet extends HttpServlet {
             
             cart.addToCart(new CartItem(prodId, size), qty);
             writeCart(username, cart);
-            response.sendRedirect("ProductDetails?id=" + prodId);
+            out.print("<script type='text/javascript'> alert('Item added to cart.');location='ProductDetails?id=" + prodId + "';</script>");
             
         } catch(Exception e){
             e.printStackTrace();
