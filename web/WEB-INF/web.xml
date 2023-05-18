@@ -52,6 +52,18 @@
         <servlet-name>CaptchaCheckerServlet</servlet-name>
         <servlet-class>controller.CaptchaCheckerServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ProductDetailsServlet</servlet-name>
+        <servlet-class>controller.ProductDetailsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddToCartServlet</servlet-name>
+        <servlet-class>controller.AddToCartServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RecommendationServlet</servlet-name>
+        <servlet-class>RecommendationServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
@@ -107,6 +119,18 @@
     <servlet-mapping>
         <servlet-name>CaptchaCheckerServlet</servlet-name>
         <url-pattern>/CaptchaChecker</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProductDetailsServlet</servlet-name>
+        <url-pattern>/ProductDetails</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddToCartServlet</servlet-name>
+        <url-pattern>/AddToCart</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RecommendationServlet</servlet-name>
+        <url-pattern>/Recommend</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
