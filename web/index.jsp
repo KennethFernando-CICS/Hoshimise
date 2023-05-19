@@ -15,4 +15,9 @@
             <jsp:include page="/ProductLoad?count=10&${sortBy}"></jsp:include>
         </div>
     </body>
+    <style>
+        .item-container:hover{
+            transform: scale(1.25,1.25);
+        }
+    </style>
 </html>

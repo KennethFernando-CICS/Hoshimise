@@ -36,7 +36,7 @@ public class HoshimiseListener implements ServletContextListener {
                 categoryList.add(rs.getString("CATEGORY"));
             }            
             sc.setAttribute("categories", categoryList);
-            sc.setAttribute("testingMode", true);
+            sc.setAttribute("testingMode", false);
         } catch (SQLException ex) {
             ex.printStackTrace();
         } finally{
