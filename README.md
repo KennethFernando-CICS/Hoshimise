@@ -7,7 +7,9 @@ Members:
 * Fernando, Kenneth Christopher
 ***
 ## Responsive Web Pages
+* Navigation Bar (navigation_bar.jsp)
 * Home Page (index.jsp)
+* Product Details Page (item_information.jsp)
 * Login Page (login.jsp)
 * Register Page (register.jsp)
 * Cart Page (cart.jsp)
@@ -26,7 +28,14 @@ Members:
 4. simplecaptcha-1.2.1.jar
 5. gson-2.10.1.jar
 ***
-## Databases
+## Database Details
+* Name: FapDB
+* Tables:
+1. USERS - contains all user information
+2. PRODUCTS - contains all product information
+3. TRANSACTIONS - contains purchase transaction records
+
+## Database SQL Scripts
 <details>
     <summary>Products Database</summary>
     

@@ -30,10 +30,10 @@ public class LoginServlet extends HttpServlet {
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();       
-        boolean temp = false; // change this para session yung gagamitin pang verify kung successful yung login
+        boolean temp = false;
         String userEmail = request.getParameter("email"), userPass = model.Encryption.encrypt(request.getParameter("password"),
                 getServletContext().getInitParameter("key"), getServletContext().getInitParameter("cipher"));
-//        System.out.println("userPass");
+
         try{
             Statement stmt = con.createStatement();
             rs = stmt.executeQuery("SELECT USERNAME, EMAIL, PASSWORD FROM USERS");
@@ -45,9 +45,9 @@ public class LoginServlet extends HttpServlet {
                         rs.getString("PASSWORD"))); //print the contents of the database into the console
                 
                 if(userEmail.equals(emailDB) && userPass.equals(rs.getString("PASSWORD").trim())){
-                    session.setAttribute("username", rs.getString("USERNAME")); //para idisplay sa nav bar natin pagka login
+                    session.setAttribute("username", rs.getString("USERNAME"));
                     System.out.println("Found user in the database");
-                    temp = true; //current verification kung yung email and password is in the database
+                    temp = true;
                     break;
                 }
             }
@@ -69,7 +69,6 @@ public class LoginServlet extends HttpServlet {
             e.printStackTrace();
             response.sendError(500);
         }
-//        response.sendRedirect("login_success.jsp");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
