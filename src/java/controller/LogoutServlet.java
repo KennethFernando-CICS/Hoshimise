@@ -1,6 +1,5 @@
 package controller;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.*;
 import javax.servlet.http.*;
 public class LogoutServlet extends HttpServlet {

@@ -38,7 +38,7 @@ public class RegisterServlet extends HttpServlet {
             Cart cart = new Cart(username);
             String cartJson = new GsonBuilder().enableComplexMapKeySerialization().create().toJson(cart);
             
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO APP.USERS VALUES (?, ?, ?, ?, ?)"); //edit nalang ito para sa cart
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO APP.USERS VALUES (?, ?, ?, ?, ?)");
             ps.setInt(1, id);
             ps.setString(2, username);
             ps.setString(3, email);
