@@ -129,7 +129,7 @@ public class ProductLoadServlet extends HttpServlet {
             while (rs.next()) {
                 System.out.println(prefix + "Loaded Product ID:" + rs.getInt("PROD_ID"));
                 out.println(
-                        "<div class=\"item-container\">\n"
+                        "<div class=\"item-container\" onClick=\"window.location.href ='ProductDetails?id=" + rs.getInt("PROD_ID") + "'\">\n"
                         + "<div class=\"temp-image\">"
                         + "<img class=\"item-img\" src=\"resources/images/" + rs.getString("IMAGE") + "\"/>"
                         + "</div>"
